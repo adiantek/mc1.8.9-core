@@ -1,0 +1,11 @@
+bin/
+logs/
+resourcepacks/
+saves/
+assets/skins/
+options.txt
+optionsof.txt
+optionsshaders.txt
+crash-reports/
+screenshots/
+shaderpacks/
