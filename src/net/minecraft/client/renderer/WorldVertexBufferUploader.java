@@ -14,6 +14,7 @@ public class WorldVertexBufferUploader
     @SuppressWarnings("incomplete-switch")
     public void draw(WorldRenderer p_181679_1_)
     {
+        GlStateManager.load();
         if (p_181679_1_.getVertexCount() > 0)
         {
             if (p_181679_1_.getDrawMode() == 7 && Config.isQuadsToTriangles())
@@ -79,6 +80,7 @@ public class WorldVertexBufferUploader
             }
             else
             {
+                GlStateManager.load();
                 GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount());
             }
 

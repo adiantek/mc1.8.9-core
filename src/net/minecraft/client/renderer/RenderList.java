@@ -25,6 +25,7 @@ public class RenderList extends ChunkRenderContainer
                     ListedRenderChunk listedrenderchunk1 = (ListedRenderChunk)renderchunk1;
                     GlStateManager.pushMatrix();
                     this.preRenderChunk(renderchunk1);
+                    GlStateManager.load();
                     GL11.glCallList(listedrenderchunk1.getDisplayList(layer, listedrenderchunk1.getCompiledChunk()));
                     GlStateManager.popMatrix();
                 }

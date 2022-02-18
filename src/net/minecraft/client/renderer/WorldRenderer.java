@@ -904,6 +904,7 @@ public class WorldRenderer
         {
             int j = p_draw_1_ * 4;
             int k = i * 4;
+            GlStateManager.load();
             GL11.glDrawArrays(this.drawMode, j, k);
         }
     }

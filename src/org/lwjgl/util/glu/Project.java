@@ -36,6 +36,8 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
+import net.minecraft.client.renderer.GlStateManager;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -213,8 +215,7 @@ public class Project extends Util {
 		matrix.put(2 * 4 + 3, -1);
 		matrix.put(3 * 4 + 2, -2 * zNear * zFar / deltaZ);
 		matrix.put(3 * 4 + 3, 0);
-
-		glMultMatrixf(matrix);
+		GlStateManager.multMatrix(matrix);
 	}
 
 	/**

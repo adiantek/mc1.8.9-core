@@ -1,6 +1,8 @@
 package net.minecraft.client.renderer.vertex;
 
 import java.nio.ByteBuffer;
+
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.optifine.render.VboRange;
 import net.optifine.render.VboRegion;
@@ -54,6 +56,7 @@ public class VertexBuffer
         }
         else
         {
+            GlStateManager.load();
             GL11.glDrawArrays(mode, 0, this.count);
         }
     }

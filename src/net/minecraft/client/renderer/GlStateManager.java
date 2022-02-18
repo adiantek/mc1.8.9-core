@@ -13,6 +13,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 
+import net.core.Matrix4f;
+import net.core.PoseStack;
+
 public class GlStateManager
 {
     private static GlStateManager.AlphaState alphaState = new GlStateManager.AlphaState();
@@ -41,6 +44,17 @@ public class GlStateManager
     private static LockCounter blendLock = new LockCounter();
     private static GlBlendState blendLockState = new GlBlendState();
     private static boolean creatingDisplayList = false;
+
+    private static final PoseStack MODELVIEW_STACK = new PoseStack();
+    private static final PoseStack PROJECTION_STACK = new PoseStack();
+    private static final PoseStack[] TEXTURE_STACK = new PoseStack[32];
+    static {
+        for (int i = 0; i < 32; i++) {
+            TEXTURE_STACK[i] = new PoseStack();
+        }
+    }
+    private static PoseStack CURRENT_STACK = MODELVIEW_STACK;
+    private static boolean textureLoaded = false;
 
     public static void pushAttrib()
     {
@@ -415,8 +429,17 @@ public class GlStateManager
     {
         if (activeTextureUnit != texture - OpenGlHelper.defaultTexUnit)
         {
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            GL11.glLoadMatrix(FB);
+
             activeTextureUnit = texture - OpenGlHelper.defaultTexUnit;
             OpenGlHelper.setActiveTexture(texture);
+            if (textureLoaded) {
+                CURRENT_STACK = TEXTURE_STACK[activeTextureUnit];
+            }
         }
     }
 
@@ -542,62 +565,193 @@ public class GlStateManager
 
     public static void matrixMode(int mode)
     {
-        GL11.glMatrixMode(mode);
+        switch (mode) {
+            case GL11.GL_MODELVIEW:
+                CURRENT_STACK = MODELVIEW_STACK;
+                textureLoaded = false;
+                break;
+            case GL11.GL_PROJECTION:
+                CURRENT_STACK = PROJECTION_STACK;
+                textureLoaded = false;
+                break;
+            case GL11.GL_TEXTURE:
+                CURRENT_STACK = TEXTURE_STACK[activeTextureUnit];
+                textureLoaded = true;
+                break;
+            default:
+                throw new UnsupportedOperationException("matrix mode: " + mode);
+        }
+        // GL11.glMatrixMode(mode);
+        checkAll();
     }
 
     public static void loadIdentity()
     {
-        GL11.glLoadIdentity();
+        CURRENT_STACK.setIdentity();
+        // GL11.glLoadIdentity();
+        // load();
+        // checkAll();
     }
 
     public static void pushMatrix()
     {
-        GL11.glPushMatrix();
+        CURRENT_STACK.pushPose();
+        // GL11.glPushMatrix();
+        // load();
+        // checkAll();
     }
 
     public static void popMatrix()
     {
-        GL11.glPopMatrix();
+        CURRENT_STACK.popPose();
+        // GL11.glPopMatrix();
+        // load();
+        // checkAll();
+    }
+
+    // private static void check(int pname, String debug) {
+    //     FloatBuffer fb = GLAllocation.createDirectFloatBuffer(16);
+    //     GL11.glGetFloat(pname, fb);
+    //     Matrix4f m = new Matrix4f();
+    //     m.load(fb, false);
+    //     float[] arr = new float[16];
+    //     m.write(arr);
+    //     float[] w = new float[16];
+
+    //     PoseStack stack = null;
+
+    //     switch (pname) {
+    //         case GL11.GL_MODELVIEW_MATRIX:
+    //         stack = MODELVIEW_STACK;
+    //         debug = "model";
+    //         break;
+    //         case GL11.GL_PROJECTION_MATRIX:
+    //         stack = PROJECTION_STACK;
+    //         debug = "proj";
+    //         break;
+    //         case GL11.GL_TEXTURE_MATRIX:
+    //         stack = TEXTURE_STACK[activeTextureUnit];
+    //         debug = "tex";
+    //         break;
+    //         default:
+    //         throw new UnsupportedOperationException("invalid pname: " + pname);
+    //     }
+    //     stack.last().pose().write(w);
+    //     float diff = 0;
+    //     for (int i = 0; i < 16; i++) {
+    //         diff = Math.max(diff, Math.abs(w[i] - arr[i]));
+    //     }
+    //     if (diff > 0.001f) {
+    //         System.out.println("DIFF! " + debug +" " + diff);
+    //         System.out.println(matrix(arr));
+    //         System.out.println(matrix(w));
+    //         System.out.println("");
+    //     }
+    // }
+
+    // private static String matrix(float[] f) {
+        // String s = "[";
+        // for (int i = 0; i < 16; i++) {
+        //     if (i > 0 && i % 4 == 0) {
+        //         s += "\n";
+        //     }
+        //     s += String.format("%3.3f   ", f[i]);
+        // }
+        // return s + "]";
+    // }
+
+    private static void checkAll() {
+        // check(GL11.GL_MODELVIEW_MATRIX, "model");
+        // check(GL11.GL_PROJECTION_MATRIX, "proj");
+        // check(GL11.GL_TEXTURE_MATRIX, "tex");
     }
 
     public static void getFloat(int pname, FloatBuffer params)
     {
-        GL11.glGetFloat(pname, params);
+        // load();
+        // GL11.glGetFloat(pname, params);
+        switch (pname) {
+            case GL11.GL_MODELVIEW_MATRIX:
+                MODELVIEW_STACK.last().pose().store(params);
+                break;
+            case GL11.GL_PROJECTION_MATRIX:
+                PROJECTION_STACK.last().pose().store(params);
+                break;
+            case GL11.GL_TEXTURE_MATRIX:
+                TEXTURE_STACK[activeTextureUnit].last().pose().store(params);
+                break;
+        }
+        // checkAll();
     }
 
+    private static final FloatBuffer FB = GLAllocation.createDirectFloatBuffer(16);
     public static void ortho(double left, double right, double bottom, double top, double zNear, double zFar)
     {
-        GL11.glOrtho(left, right, bottom, top, zNear, zFar);
+        checkAll();
+        FB.clear();
+
+        Matrix4f m = Matrix4f.orthographic((float)left, (float)right, (float)top, (float)bottom, (float)zNear, (float)zFar);
+        m.store(FB, false);
+        FB.position(0);
+        FB.limit(16);
+
+        multMatrix(FB);
+
+        // CURRENT_STACK.mulPoseMatrix(Matrix4f.orthographic((float)left, (float)right, (float)top, (float)bottom, (float)zNear, (float)zFar));
+        // GL11.glOrtho(left, right, bottom, top, zNear, zFar);
+        
+        // load();
+        // checkAll();
     }
 
     public static void rotate(float angle, float x, float y, float z)
     {
-        GL11.glRotatef(angle, x, y, z);
+        // checkAll();
+        // load();
+        // checkAll();
+        CURRENT_STACK.rotateDeg(angle, x, y, z);
+        // GL11.glRotatef(angle, x, y, z);
+        // checkAll();
+        if (y == 0.0f && z == 0.0f && angle == 165.0f) {
+            // load();
+        }
+        // checkAll();
     }
 
     public static void scale(float x, float y, float z)
     {
-        GL11.glScalef(x, y, z);
+        CURRENT_STACK.scale(x, y, z);
+        // load();
+        // GL11.glScalef(x, y, z);
+        // checkAll();
     }
 
     public static void scale(double x, double y, double z)
     {
-        GL11.glScaled(x, y, z);
+        scale((float)x, (float)y, (float)z);
     }
 
     public static void translate(float x, float y, float z)
     {
-        GL11.glTranslatef(x, y, z);
+        CURRENT_STACK.translate(x, y, z);
+        // load();
+        // GL11.glTranslatef(x, y, z);
+        // checkAll();
     }
 
     public static void translate(double x, double y, double z)
     {
-        GL11.glTranslated(x, y, z);
+        translate((float)x, (float)y, (float)z);
     }
 
     public static void multMatrix(FloatBuffer matrix)
     {
-        GL11.glMultMatrix(matrix);
+        Matrix4f m = new Matrix4f();
+        m.load(matrix, false);
+        CURRENT_STACK.mulPoseMatrix(m);
+        // load();
+        // GL11.glMultMatrix(matrix);
+        // checkAll();
     }
 
     public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha)
@@ -669,7 +823,44 @@ public class GlStateManager
 
     public static void glBegin(int p_glBegin_0_)
     {
+        load();
         GL11.glBegin(p_glBegin_0_);
+    }
+
+    public static void load() {
+        if (true) {
+            // return;
+        }
+        {
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            MODELVIEW_STACK.last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            GL11.glLoadMatrix(FB);
+        }
+        {
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            PROJECTION_STACK.last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            GL11.glLoadMatrix(FB);
+        }
+        {
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            GL11.glLoadMatrix(FB);
+        }
+        // if (CURRENT_STACK == MODELVIEW_STACK) {
+        //     GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        // } else if (CURRENT_STACK == PROJECTION_STACK) {
+        //     GL11.glMatrixMode(GL11.GL_PROJECTION);
+        // } else if (textureLoaded) {
+        //     GL11.glMatrixMode(GL11.GL_TEXTURE);
+        // } else {
+        //     throw new UnsupportedOperationException("jaka to macierz");
+        // }
     }
 
     public static void glEnd()
@@ -679,6 +870,7 @@ public class GlStateManager
 
     public static void glDrawArrays(int p_glDrawArrays_0_, int p_glDrawArrays_1_, int p_glDrawArrays_2_)
     {
+        GlStateManager.load();
         GL11.glDrawArrays(p_glDrawArrays_0_, p_glDrawArrays_1_, p_glDrawArrays_2_);
 
         if (Config.isShaders() && !creatingDisplayList)
@@ -700,6 +892,7 @@ public class GlStateManager
 
     public static void callList(int list)
     {
+        GlStateManager.load();
         GL11.glCallList(list);
 
         if (Config.isShaders() && !creatingDisplayList)
@@ -721,6 +914,7 @@ public class GlStateManager
 
     public static void callLists(IntBuffer p_callLists_0_)
     {
+        GlStateManager.load();
         GL11.glCallLists(p_callLists_0_);
 
         if (Config.isShaders() && !creatingDisplayList)
