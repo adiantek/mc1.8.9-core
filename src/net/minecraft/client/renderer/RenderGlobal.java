@@ -140,13 +140,13 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private ViewFrustum viewFrustum;
 
     /** The star GL Call list */
-    private int starGLCallList = -1;
+    // private int starGLCallList = -1;
 
     /** OpenGL sky list */
-    private int glSkyList = -1;
+    // private int glSkyList = -1;
 
     /** OpenGL sky list 2 */
-    private int glSkyList2 = -1;
+    // private int glSkyList2 = -1;
     private VertexFormat vertexBufferFormat;
     private VertexBuffer starVBO;
     private VertexBuffer skyVBO;
@@ -337,28 +337,28 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.sky2VBO.deleteGlBuffers();
         }
 
-        if (this.glSkyList2 >= 0)
-        {
-            GLAllocation.deleteDisplayLists(this.glSkyList2);
-            this.glSkyList2 = -1;
-        }
+        // if (this.glSkyList2 >= 0)
+        // {
+        //     GLAllocation.deleteDisplayLists(this.glSkyList2);
+        //     this.glSkyList2 = -1;
+        // }
 
-        if (this.vboEnabled)
-        {
+        // if (this.vboEnabled)
+        // {
             this.sky2VBO = new VertexBuffer(this.vertexBufferFormat);
             this.renderSky(worldrenderer, -16.0F, true);
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.sky2VBO.bufferData(worldrenderer.getByteBuffer());
-        }
-        else
-        {
-            this.glSkyList2 = GLAllocation.generateDisplayLists(1);
-            GL11.glNewList(this.glSkyList2, GL11.GL_COMPILE);
-            this.renderSky(worldrenderer, -16.0F, true);
-            tessellator.draw();
-            GL11.glEndList();
-        }
+        // }
+        // else
+        // {
+        //     this.glSkyList2 = GLAllocation.generateDisplayLists(1);
+        //     GL11.glNewList(this.glSkyList2, GL11.GL_COMPILE);
+        //     this.renderSky(worldrenderer, -16.0F, true);
+        //     tessellator.draw();
+        //     GL11.glEndList();
+        // }
     }
 
     private void generateSky()
@@ -371,28 +371,28 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.skyVBO.deleteGlBuffers();
         }
 
-        if (this.glSkyList >= 0)
-        {
-            GLAllocation.deleteDisplayLists(this.glSkyList);
-            this.glSkyList = -1;
-        }
+        // if (this.glSkyList >= 0)
+        // {
+        //     GLAllocation.deleteDisplayLists(this.glSkyList);
+        //     this.glSkyList = -1;
+        // }
 
-        if (this.vboEnabled)
-        {
+        // if (this.vboEnabled)
+        // {
             this.skyVBO = new VertexBuffer(this.vertexBufferFormat);
             this.renderSky(worldrenderer, 16.0F, false);
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.skyVBO.bufferData(worldrenderer.getByteBuffer());
-        }
-        else
-        {
-            this.glSkyList = GLAllocation.generateDisplayLists(1);
-            GL11.glNewList(this.glSkyList, GL11.GL_COMPILE);
-            this.renderSky(worldrenderer, 16.0F, false);
-            tessellator.draw();
-            GL11.glEndList();
-        }
+        // }
+        // else
+        // {
+        //     this.glSkyList = GLAllocation.generateDisplayLists(1);
+        //     GL11.glNewList(this.glSkyList, GL11.GL_COMPILE);
+        //     this.renderSky(worldrenderer, 16.0F, false);
+        //     tessellator.draw();
+        //     GL11.glEndList();
+        // }
     }
 
     private void renderSky(WorldRenderer worldRendererIn, float posY, boolean reverseX)
@@ -433,30 +433,30 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.starVBO.deleteGlBuffers();
         }
 
-        if (this.starGLCallList >= 0)
-        {
-            GLAllocation.deleteDisplayLists(this.starGLCallList);
-            this.starGLCallList = -1;
-        }
+        // if (this.starGLCallList >= 0)
+        // {
+        //     GLAllocation.deleteDisplayLists(this.starGLCallList);
+        //     this.starGLCallList = -1;
+        // }
 
-        if (this.vboEnabled)
-        {
+        // if (this.vboEnabled)
+        // {
             this.starVBO = new VertexBuffer(this.vertexBufferFormat);
             this.renderStars(worldrenderer);
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.starVBO.bufferData(worldrenderer.getByteBuffer());
-        }
-        else
-        {
-            this.starGLCallList = GLAllocation.generateDisplayLists(1);
-            GlStateManager.pushMatrix();
-            GL11.glNewList(this.starGLCallList, GL11.GL_COMPILE);
-            this.renderStars(worldrenderer);
-            tessellator.draw();
-            GL11.glEndList();
-            GlStateManager.popMatrix();
-        }
+        // }
+        // else
+        // {
+        //     this.starGLCallList = GLAllocation.generateDisplayLists(1);
+        //     GlStateManager.pushMatrix();
+        //     GL11.glNewList(this.starGLCallList, GL11.GL_COMPILE);
+        //     this.renderStars(worldrenderer);
+        //     tessellator.draw();
+        //     GL11.glEndList();
+        //     GlStateManager.popMatrix();
+        // }
     }
 
     private void renderStars(WorldRenderer worldRendererIn)
@@ -1732,19 +1732,19 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             if (Config.isSkyEnabled())
             {
-                if (this.vboEnabled)
-                {
+                // if (this.vboEnabled)
+                // {
                     this.skyVBO.bindBuffer();
                     GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
                     this.skyVBO.drawArrays(7);
                     this.skyVBO.unbindBuffer();
                     GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-                }
-                else
-                {
-                    GlStateManager.callList(this.glSkyList);
-                }
+                // }
+                // else
+                // {
+                //     GlStateManager.callList(this.glSkyList);
+                // }
             }
 
             GlStateManager.disableFog();
@@ -1877,19 +1877,19 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             {
                 GlStateManager.color(f17, f17, f17, f17);
 
-                if (this.vboEnabled)
-                {
+                // if (this.vboEnabled)
+                // {
                     this.starVBO.bindBuffer();
                     GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
                     this.starVBO.drawArrays(7);
                     this.starVBO.unbindBuffer();
                     GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-                }
-                else
-                {
-                    GlStateManager.callList(this.starGLCallList);
-                }
+                // }
+                // else
+                // {
+                //     GlStateManager.callList(this.starGLCallList);
+                // }
             }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -1918,19 +1918,19 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0F, 12.0F, 0.0F);
 
-                if (this.vboEnabled)
-                {
+                // if (this.vboEnabled)
+                // {
                     this.sky2VBO.bindBuffer();
                     GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
                     this.sky2VBO.drawArrays(7);
                     this.sky2VBO.unbindBuffer();
                     GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-                }
-                else
-                {
-                    GlStateManager.callList(this.glSkyList2);
-                }
+                // }
+                // else
+                // {
+                //     GlStateManager.callList(this.glSkyList2);
+                // }
 
                 GlStateManager.popMatrix();
                 float f20 = 1.0F;
@@ -1979,19 +1979,19 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             if (Config.isSkyEnabled())
             {
-                if (this.vboEnabled)
-                {
+                // if (this.vboEnabled)
+                // {
                     this.sky2VBO.bindBuffer();
                     GlStateManager.glEnableClientState(32884);
                     GlStateManager.glVertexPointer(3, 5126, 12, 0);
                     this.sky2VBO.drawArrays(7);
                     this.sky2VBO.unbindBuffer();
                     GlStateManager.glDisableClientState(32884);
-                }
-                else
-                {
-                    GlStateManager.callList(this.glSkyList2);
-                }
+                // }
+                // else
+                // {
+                //     GlStateManager.callList(this.glSkyList2);
+                // }
             }
 
             GlStateManager.popMatrix();
