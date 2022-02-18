@@ -128,19 +128,19 @@ public class ARBShaderObjects {
         glUniform4fvARB(location, value);
     }
     
-    public static void glUniform1ARB(@NativeType("GLint") int location, @NativeType("GLint const *") IntBuffer value) {
+    public static void glUniform1ARB(@NativeType("GLint") int location, @NativeType("GLfloat const *") IntBuffer value) {
         glUniform1ivARB(location, value);
     }
     
-    public static void glUniform2ARB(@NativeType("GLint") int location, @NativeType("GLint const *") IntBuffer value) {
+    public static void glUniform2ARB(@NativeType("GLint") int location, @NativeType("GLfloat const *") IntBuffer value) {
         glUniform2ivARB(location, value);
     }
     
-    public static void glUniform3ARB(@NativeType("GLint") int location, @NativeType("GLint const *") IntBuffer value) {
+    public static void glUniform3ARB(@NativeType("GLint") int location, @NativeType("GLfloat const *") IntBuffer value) {
         glUniform3ivARB(location, value);
     }
     
-    public static void glUniform4ARB(@NativeType("GLint") int location, @NativeType("GLint const *") IntBuffer value) {
+    public static void glUniform4ARB(@NativeType("GLint") int location, @NativeType("GLfloat const *") IntBuffer value) {
         glUniform4ivARB(location, value);
     }
         

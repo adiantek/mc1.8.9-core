@@ -173,6 +173,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextCapabilities;
@@ -827,7 +828,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         BufferedImage bufferedimage = ImageIO.read(imageStream);
         int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[])null, 0, bufferedimage.getWidth());
-        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
+        ByteBuffer bytebuffer = ByteBuffer.allocateDirect(4 * aint.length);
 
         for (int i : aint)
         {
@@ -1191,8 +1192,14 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.frameTimer.addFrame(k - this.startNanoTime);
         this.startNanoTime = k;
 
-        while (getSystemTime() >= this.debugUpdateTime + 1000L)
+        while (true)
         {
+            long systime = getSystemTime();
+            boolean var = systime >= this.debugUpdateTime + 1000L;
+            if (!var) {
+                break;
+            }
+            System.out.println(systime + " >= " + this.debugUpdateTime);
             debugFPS = this.fpsCounter;
             this.debug = String.format("%d fps (%d chunk update%s) T: %s%s%s%s%s", new Object[] {Integer.valueOf(debugFPS), Integer.valueOf(RenderChunk.renderChunksUpdated), RenderChunk.renderChunksUpdated != 1 ? "s" : "", (float)this.gameSettings.limitFramerate == GameSettings.Options.FRAMERATE_LIMIT.getValueMax() ? "inf" : Integer.valueOf(this.gameSettings.limitFramerate), this.gameSettings.enableVsync ? " vsync" : "", this.gameSettings.fancyGraphics ? "" : " fast", this.gameSettings.clouds == 0 ? "" : (this.gameSettings.clouds == 1 ? " fast-clouds" : " fancy-clouds"), OpenGlHelper.useVbo() ? " vbo" : ""});
             RenderChunk.renderChunksUpdated = 0;
@@ -3027,7 +3034,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public static long getSystemTime()
     {
-        return Sys.getTime() * 1000L / Sys.getTimerResolution();
+        return (long) (GLFW.glfwGetTime() * 1000);
     }
 
     /**

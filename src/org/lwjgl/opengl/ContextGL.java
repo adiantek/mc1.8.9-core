@@ -63,8 +63,7 @@ final class ContextGL implements Context {
     private static final ThreadLocal<ContextGL> current_context_local = new ThreadLocal<ContextGL>();
 
     /** Handle to the native GL rendering context */
-    //private final ByteBuffer handle;
-            private final long handle;
+    private final ByteBuffer handle;
     private final PeerInfo peer_info;
 
     private final ContextAttribs contextAttribs;
@@ -96,13 +95,7 @@ final class ContextGL implements Context {
     static ContextGL getCurrentContext() {
         return current_context_local.get();
     }
-    ContextGL(long handle) {
-        this.peer_info = null;
-        this.contextAttribs = null;
-        this.forwardCompatible = false;
-        this.handle = handle;
-        System.out.println("LWJGLX: ready-handle context created");
-    }
+
     /** Create a context with the specified peer info and shared context */
     ContextGL(PeerInfo peer_info, ContextAttribs attribs, ContextGL shared_context) throws LWJGLException {
         ContextGL context_lock = shared_context != null ? shared_context : this;
@@ -127,11 +120,8 @@ final class ContextGL implements Context {
 */
 
                 forwardCompatible = false;
-                long share = 0;
-                if(shared_context != null) {
-                    share = shared_context.handle;
-                }
-                this.handle = GLFW.nglfwCreateContext(share);
+
+                this.handle = null;
                 // implementation.create(peer_info, attribList, shared_context != null ? shared_context.handle : null);
             /* } catch (LWJGLException e) {
                 // GLContext.unloadOpenGLLibrary();
@@ -194,13 +184,12 @@ final class ContextGL implements Context {
             throw new IllegalStateException("Context is destroyed");
         thread = Thread.currentThread();
         current_context_local.set(this);
-        GLFW.glfwMakeContextCurrent(handle);
-        GLContext.initCapabilities();
+        GLFW.glfwMakeContextCurrent(Display.Window.handle);
         isCurrent = true;
     }
 
     ByteBuffer getHandle() {
-        return null;
+        return handle;
     }
 
     /** Query whether the context is current */
@@ -219,7 +208,7 @@ final class ContextGL implements Context {
                 destroyed = true;
                 thread = null;
                 // GLContext.unloadOpenGLLibrary();
-
+                
                 Display.destroy();
             } catch (LWJGLException e) {
                 LWJGLUtil.log("Exception occurred while destroying context: " + e);

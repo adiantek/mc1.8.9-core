@@ -47,11 +47,7 @@ import org.lwjgl.LWJGLException;
 public final class SharedDrawable extends DrawableGL {
 
     public SharedDrawable(final Drawable drawable) throws LWJGLException {
-        if (drawable != null) {
-            this.context = (ContextGL)((DrawableLWJGL)drawable).createSharedContext();
-        } else {
-            this.context = (ContextGL)((DrawableLWJGL)Display.getDrawable()).createSharedContext();
-        }
+        this.context = (ContextGL)((DrawableLWJGL)drawable).createSharedContext();
     }
 
     public ContextGL createSharedContext() {
@@ -59,8 +55,4 @@ public final class SharedDrawable extends DrawableGL {
         // throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void makeCurrent() throws LWJGLException {
-        //stub
-    }
 }
