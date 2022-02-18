@@ -304,16 +304,16 @@ public class FontRenderer implements IResourceManagerReloadListener
         this.bindTexture(this.locationFontTexture);
         float f = this.charWidthFloat[ch];
         float f1 = 7.99F;
-        GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-        GL11.glTexCoord2f((float)i / 128.0F, (float)j / 128.0F);
-        GL11.glVertex3f(this.posX + (float)k, this.posY, 0.0F);
-        GL11.glTexCoord2f((float)i / 128.0F, ((float)j + 7.99F) / 128.0F);
-        GL11.glVertex3f(this.posX - (float)k, this.posY + 7.99F, 0.0F);
-        GL11.glTexCoord2f(((float)i + f1 - 1.0F) / 128.0F, (float)j / 128.0F);
-        GL11.glVertex3f(this.posX + f1 - 1.0F + (float)k, this.posY, 0.0F);
-        GL11.glTexCoord2f(((float)i + f1 - 1.0F) / 128.0F, ((float)j + 7.99F) / 128.0F);
-        GL11.glVertex3f(this.posX + f1 - 1.0F - (float)k, this.posY + 7.99F, 0.0F);
-        GL11.glEnd();
+        
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(this.posX + (float)k, this.posY, 0.0F).tex((float)i / 128.0F, (float)j / 128.0F).endVertex();
+        worldrenderer.pos(this.posX - (float)k, this.posY + 7.99F, 0.0F).tex((float)i / 128.0F, ((float)j + 7.99F) / 128.0F).endVertex();
+        worldrenderer.pos(this.posX + f1 - 1.0F + (float)k, this.posY, 0.0F).tex(((float)i + f1 - 1.0F) / 128.0F, (float)j / 128.0F).endVertex();
+        worldrenderer.pos(this.posX + f1 - 1.0F - (float)k, this.posY + 7.99F, 0.0F).tex(((float)i + f1 - 1.0F) / 128.0F, ((float)j + 7.99F) / 128.0F).endVertex();
+        tessellator.draw();
+
         return f;
     }
 
@@ -357,6 +357,7 @@ public class FontRenderer implements IResourceManagerReloadListener
             float f3 = (float)((ch & 255) / 16 * 16);
             float f4 = f1 - f - 0.02F;
             float f5 = italic ? 1.0F : 0.0F;
+            GlStateManager.load();
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
             GL11.glTexCoord2f(f2 / 256.0F, f3 / 256.0F);
             GL11.glVertex3f(this.posX + f5, this.posY, 0.0F);
