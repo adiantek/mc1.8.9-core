@@ -34,7 +34,6 @@ public class ModelRenderer
     public float rotateAngleX;
     public float rotateAngleY;
     public float rotateAngleZ;
-    private boolean compiled;
 
     /** The GL display list rendered by the Tessellator for this model */
     private int displayList;
@@ -154,11 +153,6 @@ public class ModelRenderer
         {
             this.checkResetDisplayList();
 
-            if (!this.compiled)
-            {
-                this.compileDisplayList(p_78785_1_);
-            }
-
             int i = 0;
 
             if (this.textureLocation != null && !this.renderGlobal.renderOverlayDamaged)
@@ -189,7 +183,8 @@ public class ModelRenderer
                         GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
                     }
 
-                    GlStateManager.callList(this.displayList);
+                    // GlStateManager.callList(this.displayList);
+                    this.compileDisplayList(p_78785_1_);
 
                     if (this.childModels != null)
                     {
@@ -213,7 +208,8 @@ public class ModelRenderer
                         GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
                     }
 
-                    GlStateManager.callList(this.displayList);
+                    // GlStateManager.callList(this.displayList);
+                    this.compileDisplayList(p_78785_1_);
 
                     if (this.childModels != null)
                     {
@@ -256,7 +252,8 @@ public class ModelRenderer
                     GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
                 }
 
-                GlStateManager.callList(this.displayList);
+                // GlStateManager.callList(this.displayList);
+                this.compileDisplayList(p_78785_1_);
 
                 if (this.childModels != null)
                 {
@@ -283,11 +280,6 @@ public class ModelRenderer
         if (!this.isHidden && this.showModel)
         {
             this.checkResetDisplayList();
-
-            if (!this.compiled)
-            {
-                this.compileDisplayList(p_78791_1_);
-            }
 
             int i = 0;
 
@@ -331,7 +323,7 @@ public class ModelRenderer
                 GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
             }
 
-            GlStateManager.callList(this.displayList);
+            this.compileDisplayList(p_78791_1_);
 
             if (this.childModels != null)
             {
@@ -358,11 +350,6 @@ public class ModelRenderer
         if (!this.isHidden && this.showModel)
         {
             this.checkResetDisplayList();
-
-            if (!this.compiled)
-            {
-                this.compileDisplayList(scale);
-            }
 
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F)
             {
@@ -398,12 +385,12 @@ public class ModelRenderer
      */
     private void compileDisplayList(float scale)
     {
-        if (this.displayList == 0)
-        {
-            this.displayList = GLAllocation.generateDisplayLists(1);
-        }
+        // if (this.displayList == 0)
+        // {
+        //     this.displayList = GLAllocation.generateDisplayLists(1);
+        // }
 
-        GL11.glNewList(this.displayList, GL11.GL_COMPILE);
+        // GL11.glNewList(this.displayList, GL11.GL_COMPILE);
         WorldRenderer worldrenderer = Tessellator.getInstance().getWorldRenderer();
 
         for (int i = 0; i < this.cubeList.size(); ++i)
@@ -417,8 +404,8 @@ public class ModelRenderer
             modelsprite.render(Tessellator.getInstance(), scale);
         }
 
-        GL11.glEndList();
-        this.compiled = true;
+        // GL11.glEndList();
+        // this.compiled = true;
     }
 
     /**
@@ -436,11 +423,6 @@ public class ModelRenderer
         this.spriteList.add(new ModelSprite(this, this.textureOffsetX, this.textureOffsetY, p_addSprite_1_, p_addSprite_2_, p_addSprite_3_, p_addSprite_4_, p_addSprite_5_, p_addSprite_6_, p_addSprite_7_));
     }
 
-    public boolean getCompiled()
-    {
-        return this.compiled;
-    }
-
     public int getDisplayList()
     {
         return this.displayList;
@@ -448,11 +430,11 @@ public class ModelRenderer
 
     private void checkResetDisplayList()
     {
-        if (this.countResetDisplayList != Shaders.countResetDisplayLists)
-        {
-            this.compiled = false;
-            this.countResetDisplayList = Shaders.countResetDisplayLists;
-        }
+        // if (this.countResetDisplayList != Shaders.countResetDisplayLists)
+        // {
+        //     this.compiled = false;
+        //     this.countResetDisplayList = Shaders.countResetDisplayLists;
+        // }
     }
 
     public ResourceLocation getTextureLocation()
