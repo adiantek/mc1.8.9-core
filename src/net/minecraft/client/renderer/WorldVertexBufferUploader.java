@@ -16,7 +16,6 @@ public class WorldVertexBufferUploader
     @SuppressWarnings("incomplete-switch")
     public void draw(WorldRenderer p_181679_1_)
     {
-        GlStateManager.load();
         if (p_181679_1_.getVertexCount() > 0)
         {
             if (p_181679_1_.getDrawMode() == 7 && Config.isQuadsToTriangles())
@@ -24,6 +23,7 @@ public class WorldVertexBufferUploader
                 p_181679_1_.quadsToTriangles();
             }
 
+            GlStateManager.load();
             VertexFormat vertexformat = p_181679_1_.getVertexFormat();
             int i = vertexformat.getNextOffset();
             ByteBuffer bytebuffer = p_181679_1_.getByteBuffer();
@@ -112,22 +112,30 @@ public class WorldVertexBufferUploader
                     switch (vertexformatelement$enumusage1)
                     {
                         case POSITION:
-                            GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                            }
                             break;
 
                         case UV:
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + i1);
-                            GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                            }
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
                             break;
 
                         case COLOR:
-                            GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                            }
                             GlStateManager.resetColor();
                             break;
 
                         case NORMAL:
-                            GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+                            }
                     }
                 }
             }

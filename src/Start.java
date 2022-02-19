@@ -1,14 +1,16 @@
-import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Arrays;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.main.Main;
 
 public class Start
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws LWJGLException
     {
-        Main.main(concat(new String[] {"--width", "1920", "--height", "1080", "--version", "mcp", "--accessToken", "0", "--assetsDir", "C:\\Users\\ktosiek\\AppData\\Roaming\\.minecraft\\assets", "--assetIndex", "1.8", "--userProperties", "{}"}, args));
+        GLFW.glfwInit();
+        Main.main(concat(new String[] {"--width", "1920", "--height", "1080", "--version", "mcp", "--accessToken", "0", "--assetsDir", System.getenv("APPDATA") + "\\.minecraft\\assets", "--assetIndex", "1.8", "--userProperties", "{}"}, args));
     }
 
     public static <T> T[] concat(T[] first, T[] second)
