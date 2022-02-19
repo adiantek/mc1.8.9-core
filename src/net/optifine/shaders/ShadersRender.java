@@ -240,7 +240,7 @@ public class ShadersRender
             double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
             double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
             frustum.setPosition(d0, d1, d2);
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.enableDepth();
             GlStateManager.depthFunc(515);
             GlStateManager.depthMask(true);
@@ -267,8 +267,8 @@ public class ShadersRender
             renderglobal.renderBlockLayer(EnumWorldBlockLayer.CUTOUT, (double)partialTicks, 2, entity);
             Shaders.checkGLError("shadow terrain cutout");
             minecraft.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
-            GlStateManager.shadeModel(7424);
-            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
             GlStateManager.matrixMode(5888);
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -287,7 +287,7 @@ public class ShadersRender
             GlStateManager.disableBlend();
             GlStateManager.enableCull();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
             if (Shaders.usedShadowDepthBuffers >= 2)
             {
@@ -301,7 +301,7 @@ public class ShadersRender
             GlStateManager.disableBlend();
             GlStateManager.depthMask(true);
             minecraft.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             Shaders.checkGLError("shadow pre-translucent");
             GL20.glDrawBuffers(Shaders.sfbDrawBuffers);
             Shaders.checkGLError("shadow drawbuffers pre-translucent");
@@ -324,7 +324,7 @@ public class ShadersRender
                 Shaders.checkGLError("shadow entities 1");
             }
 
-            GlStateManager.shadeModel(7424);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
             GlStateManager.depthMask(true);
             GlStateManager.enableCull();
             GlStateManager.disableBlend();

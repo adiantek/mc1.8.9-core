@@ -535,12 +535,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         this.mouseHelper = new MouseHelper();
         this.checkGLError("Pre startup");
         GlStateManager.enableTexture2D();
-        GlStateManager.shadeModel(7425);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.clearDepth(1.0D);
         GlStateManager.enableDepth();
         GlStateManager.depthFunc(515);
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.cullFace(1029);
         GlStateManager.matrixMode(5889);
         GlStateManager.loadIdentity();
@@ -942,7 +942,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         framebuffer.unbindFramebuffer();
         framebuffer.framebufferRender(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i);
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         this.updateDisplay();
     }
 

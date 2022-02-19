@@ -1,5 +1,7 @@
 package net.minecraft.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -101,7 +103,7 @@ public class Gui
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.shadeModel(7425);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -110,7 +112,7 @@ public class Gui
         worldrenderer.pos((double)left, (double)bottom, (double)this.zLevel).color(f5, f6, f7, f4).endVertex();
         worldrenderer.pos((double)right, (double)bottom, (double)this.zLevel).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
-        GlStateManager.shadeModel(7424);
+        GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();

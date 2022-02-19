@@ -2,6 +2,9 @@ package net.minecraft.client.renderer.entity;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDoublePlant;
@@ -435,7 +438,7 @@ public class RenderItem implements IResourceManagerReloadListener
         this.textureManager.getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
         this.preTransform(stack);
         GlStateManager.enableRescaleNormal();
-        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.pushMatrix();
@@ -483,7 +486,7 @@ public class RenderItem implements IResourceManagerReloadListener
         this.textureManager.getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

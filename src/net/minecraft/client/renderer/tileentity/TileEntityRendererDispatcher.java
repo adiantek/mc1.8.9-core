@@ -1,6 +1,9 @@
 package net.minecraft.client.renderer.tileentity;
 
 import com.google.common.collect.Maps;
+
+import org.lwjgl.opengl.GL11;
+
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -225,11 +228,11 @@ public class TileEntityRendererDispatcher
 
         if (Minecraft.isAmbientOcclusionEnabled())
         {
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
         }
         else
         {
-            GlStateManager.shadeModel(7424);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
         }
 
         if (p_drawBatch_1_ > 0)

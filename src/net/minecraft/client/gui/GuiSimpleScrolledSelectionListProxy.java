@@ -1,5 +1,7 @@
 package net.minecraft.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -112,7 +114,7 @@ public class GuiSimpleScrolledSelectionListProxy extends GuiSlot
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
             GlStateManager.disableAlpha();
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.disableTexture2D();
             int j1 = this.func_148135_f();
 
@@ -149,7 +151,7 @@ public class GuiSimpleScrolledSelectionListProxy extends GuiSlot
 
             this.func_148142_b(mouseXIn, mouseYIn);
             GlStateManager.enableTexture2D();
-            GlStateManager.shadeModel(7424);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
             GlStateManager.enableAlpha();
             GlStateManager.disableBlend();
         }

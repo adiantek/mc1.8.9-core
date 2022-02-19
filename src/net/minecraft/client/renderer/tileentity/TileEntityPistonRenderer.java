@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer.tileentity;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.BlockPistonExtension;
@@ -40,11 +42,11 @@ public class TileEntityPistonRenderer extends TileEntitySpecialRenderer<TileEnti
 
             if (Minecraft.isAmbientOcclusionEnabled())
             {
-                GlStateManager.shadeModel(7425);
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
             }
             else
             {
-                GlStateManager.shadeModel(7424);
+                GlStateManager.shadeModel(GL11.GL_FLAT);
             }
 
             worldrenderer.begin(7, DefaultVertexFormats.BLOCK);

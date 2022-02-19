@@ -5081,7 +5081,7 @@ public class Shaders
         {
             useProgram(ProgramSpiderEyes);
             GlStateManager.enableAlpha();
-            GlStateManager.alphaFunc(516, 0.0F);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
             GlStateManager.blendFunc(770, 771);
         }
     }

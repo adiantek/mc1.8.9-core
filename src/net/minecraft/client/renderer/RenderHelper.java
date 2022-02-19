@@ -44,7 +44,7 @@ public class RenderHelper
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer)setColorBuffer(f1, f1, f1, 1.0F));
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, (FloatBuffer)setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, (FloatBuffer)setColorBuffer(f2, f2, f2, 1.0F));
-        GlStateManager.shadeModel(7424);
+        GlStateManager.shadeModel(GL11.GL_FLAT);
         GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, (FloatBuffer)setColorBuffer(f, f, f, 1.0F));
     }
 

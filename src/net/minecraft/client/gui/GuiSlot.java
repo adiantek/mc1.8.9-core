@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 public abstract class GuiSlot
 {
@@ -250,7 +251,7 @@ public abstract class GuiSlot
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
             GlStateManager.disableAlpha();
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.disableTexture2D();
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
             worldrenderer.pos((double)this.left, (double)(this.top + i1), 0.0D).tex(0.0D, 1.0D).color(0, 0, 0, 0).endVertex();
@@ -299,7 +300,7 @@ public abstract class GuiSlot
 
             this.func_148142_b(mouseXIn, mouseYIn);
             GlStateManager.enableTexture2D();
-            GlStateManager.shadeModel(7424);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
             GlStateManager.enableAlpha();
             GlStateManager.disableBlend();
         }

@@ -1,6 +1,9 @@
 package net.minecraft.client.renderer.entity.layers;
 
 import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -27,7 +30,7 @@ public class LayerEnderDragonDeath implements LayerRenderer<EntityDragon>
 
             Random random = new Random(432L);
             GlStateManager.disableTexture2D();
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(770, 1);
             GlStateManager.disableAlpha();
@@ -59,7 +62,7 @@ public class LayerEnderDragonDeath implements LayerRenderer<EntityDragon>
             GlStateManager.depthMask(true);
             GlStateManager.disableCull();
             GlStateManager.disableBlend();
-            GlStateManager.shadeModel(7424);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableTexture2D();
             GlStateManager.enableAlpha();
