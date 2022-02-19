@@ -937,13 +937,15 @@ public class OpenGlHelper
      */
     public static void setLightmapTextureCoords(int target, float p_77475_1_, float p_77475_2_)
     {
-        if (arbMultitexture)
-        {
-            ARBMultitexture.glMultiTexCoord2fARB(target, p_77475_1_, p_77475_2_);
-        }
-        else
-        {
-            GL13.glMultiTexCoord2f(target, p_77475_1_, p_77475_2_);
+        if (!Core.CORE) {
+            if (arbMultitexture)
+            {
+                ARBMultitexture.glMultiTexCoord2fARB(target, p_77475_1_, p_77475_2_);
+            }
+            else
+            {
+                GL13.glMultiTexCoord2f(target, p_77475_1_, p_77475_2_);
+            }
         }
 
         if (target == lightmapTexUnit)

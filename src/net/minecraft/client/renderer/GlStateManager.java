@@ -12,12 +12,17 @@ import net.optifine.render.GlBlendState;
 import net.optifine.shaders.Shaders;
 import net.optifine.util.LockCounter;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL43;
 
 import net.core.Core;
 import net.core.Matrix4f;
 import net.core.PoseStack;
+import net.core.Program;
 
 public class GlStateManager
 {
@@ -149,7 +154,9 @@ public class GlStateManager
         {
             colorMaterialState.face = face;
             colorMaterialState.mode = mode;
-            GL11.glColorMaterial(face, mode);
+            if (!Core.CORE) {
+                GL11.glColorMaterial(face, mode);
+            }
         }
     }
 
@@ -270,7 +277,9 @@ public class GlStateManager
         if (param != fogState.mode)
         {
             fogState.mode = param;
-            GL11.glFogi(GL11.GL_FOG_MODE, param);
+            if (!Core.CORE) {
+                GL11.glFogi(GL11.GL_FOG_MODE, param);
+            }
 
             if (Config.isShaders())
             {
@@ -289,7 +298,9 @@ public class GlStateManager
         if (param != fogState.density)
         {
             fogState.density = param;
-            GL11.glFogf(GL11.GL_FOG_DENSITY, param);
+            if (!Core.CORE) {
+                GL11.glFogf(GL11.GL_FOG_DENSITY, param);
+            }
 
             if (Config.isShaders())
             {
@@ -471,6 +482,10 @@ public class GlStateManager
     public static void disableTexture2D()
     {
         textureState[activeTextureUnit].texture2DState.setDisabled();
+    }
+
+    public static boolean isTexture2DEnabled() {
+        return textureState[activeTextureUnit].texture2DState.isEnabled();
     }
 
     public static int generateTexture()
@@ -778,6 +793,43 @@ public class GlStateManager
     {
         load();
         GL11.glBegin(p_glBegin_0_);
+    }
+
+    public static void load(Program program) {
+        if (program.ModelViewMat != -1) {
+            FB.position(0);
+            FB.limit(16);
+            MODELVIEW_STACK.last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            OpenGlHelper.glUniformMatrix4(program.ModelViewMat, false, FB);
+        }
+        if (program.ProjMat != -1) {
+            FB.position(0);
+            FB.limit(16);
+            PROJECTION_STACK.last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            OpenGlHelper.glUniformMatrix4(program.ProjMat, false, FB);
+        }
+        if (program.AlphaDiscard != -1) {
+            FB.position(0);
+            FB.limit(16);
+            if (alphaState.alphaTest.isEnabled()) {
+                FB.put(0, alphaState.ref);
+            } else {
+                FB.put(0, -1.0f);
+            }
+            FB.position(0);
+            FB.limit(1);
+            OpenGlHelper.glUniform1(program.AlphaDiscard, FB);
+        }
+        if (program.Sampler0 != -1) {
+            OpenGlHelper.glUniform1i(program.Sampler0, activeTextureUnit);
+        }
+        if (program.ColorModulator != -1) {
+            GL20.glUniform4f(program.ColorModulator, colorState.red, colorState.green, colorState.blue, colorState.alpha);
+        }
     }
 
     public static void load() {
@@ -1176,6 +1228,10 @@ public class GlStateManager
             this.setState(true);
         }
 
+        public boolean isEnabled() {
+            return this.currentState;
+        }
+
         public void setState(boolean state)
         {
             if (state != this.currentState)
@@ -1184,7 +1240,13 @@ public class GlStateManager
                 if (Core.CORE) {
                     if (this.capability == GL11.GL_ALPHA_TEST ||
                         this.capability == GL11.GL_TEXTURE_2D ||
-                        this.capability == GL11.GL_COLOR_MATERIAL) {
+                        this.capability == GL11.GL_COLOR_MATERIAL ||
+                        this.capability == GL11.GL_FOG ||
+                        this.capability == GL11.GL_LIGHTING ||
+                        this.capability == GL12.GL_RESCALE_NORMAL) {
+                        return;
+                    }
+                    if (this.capability >= GL11.GL_LIGHT0 && this.capability <= GL11.GL_LIGHT7) {
                         return;
                     }
                 }

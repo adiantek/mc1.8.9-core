@@ -81,7 +81,7 @@ public class ShaderLoader
         return shaderloader;
     }
 
-    protected static byte[] toByteArray(BufferedInputStream p_177064_0_) throws IOException
+    public static byte[] toByteArray(BufferedInputStream p_177064_0_) throws IOException
     {
         byte[] abyte;
 
@@ -119,12 +119,12 @@ public class ShaderLoader
             return this.shaderName;
         }
 
-        protected String getShaderExtension()
+        public String getShaderExtension()
         {
             return this.shaderExtension;
         }
 
-        protected int getShaderMode()
+        public int getShaderMode()
         {
             return this.shaderMode;
         }

@@ -2,6 +2,7 @@ import java.util.Arrays;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 
 import net.minecraft.client.main.Main;
 
@@ -10,6 +11,7 @@ public class Start
     public static void main(String[] args) throws LWJGLException
     {
         GLFW.glfwInit();
+        GLFWErrorCallback.createPrint(System.out).set();
         Main.main(concat(new String[] {"--width", "1920", "--height", "1080", "--version", "mcp", "--accessToken", "0", "--assetsDir", System.getenv("APPDATA") + "\\.minecraft\\assets", "--assetIndex", "1.8", "--userProperties", "{}"}, args));
     }
 

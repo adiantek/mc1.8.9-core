@@ -1,16 +1,23 @@
 package net.minecraft.client.renderer;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.List;
+import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 import net.core.Core;
+import net.core.Program;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.src.Config;
 import net.optifine.reflect.Reflector;
 import net.optifine.shaders.SVertexBuilder;
-import org.lwjgl.opengl.GL11;
 
 public class WorldVertexBufferUploader
 {
@@ -23,8 +30,11 @@ public class WorldVertexBufferUploader
             {
                 p_181679_1_.quadsToTriangles();
             }
+            if (Core.CORE) {
+                this.drawCore(p_181679_1_);
+                return;
+            }
 
-            Minecraft.checkGLError("a");
             GlStateManager.load();
             VertexFormat vertexformat = p_181679_1_.getVertexFormat();
             int i = vertexformat.getNextOffset();
@@ -97,7 +107,7 @@ public class WorldVertexBufferUploader
             {
                 GlStateManager.load();
                 Minecraft.checkGLError("a");
-                GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount());
+                // GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount());
                 Minecraft.checkGLError("a");
             }
 
@@ -149,6 +159,45 @@ public class WorldVertexBufferUploader
             Minecraft.checkGLError("a");
         }
 
+        p_181679_1_.reset();
+    }
+
+    private void drawCore(WorldRenderer p_181679_1_) {
+        VertexFormat vertexformat = p_181679_1_.getVertexFormat();
+        Program program = null;
+        if (vertexformat == DefaultVertexFormats.POSITION_TEX_COLOR) {
+            program = GlStateManager.isTexture2DEnabled() ? Program.POS_TEX_COLOR : Program.POS_COLOR_NO_TEX;
+        }
+        if (vertexformat == DefaultVertexFormats.POSITION_TEX) {
+            program = Program.POS_TEX;
+        }
+        if (vertexformat == DefaultVertexFormats.POSITION_COLOR) {
+            program = Program.POS_COLOR;
+        }
+        if (vertexformat == DefaultVertexFormats.POSITION) {
+            program = Program.POS;
+        }
+
+        if (program == null) {
+            p_181679_1_.reset();
+            return;
+        }
+
+        OpenGlHelper.glUseProgram(program.program);
+        GlStateManager.load(program);
+
+        GL30.glBindVertexArray(program.vao);
+        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, program.vbo);
+        ByteBuffer bytebuffer = p_181679_1_.getByteBuffer();
+
+        OpenGlHelper.glBufferData(OpenGlHelper.GL_ARRAY_BUFFER, bytebuffer, GL30.GL_STREAM_DRAW);
+
+        GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, bytebuffer.limit() / vertexformat.getNextOffset());
+        Minecraft.checkGLError("a");
+        
+        GL30.glBindVertexArray(0);
+        OpenGlHelper.glUseProgram(0);
+        
         p_181679_1_.reset();
     }
 }

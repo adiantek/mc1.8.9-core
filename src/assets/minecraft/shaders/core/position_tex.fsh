@@ -6,12 +6,11 @@ uniform vec4 ColorModulator;
 uniform float AlphaDiscard;
 
 in vec2 texCoord0;
-in vec4 vertexColor;
 
 out vec4 fragColor;
 
 void main() {
-    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+    vec4 color = texture(Sampler0, texCoord0);
     if (color.a <= AlphaDiscard) {
         discard;
     }

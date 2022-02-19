@@ -16,6 +16,7 @@ public class VertexFormat
     private int colorElementOffset;
     private List<Integer> uvOffsetsById;
     private int normalElementOffset;
+    private int positionElementOffset;
 
     public VertexFormat(VertexFormat vertexFormatIn)
     {
@@ -37,6 +38,7 @@ public class VertexFormat
         this.colorElementOffset = -1;
         this.uvOffsetsById = Lists.<Integer>newArrayList();
         this.normalElementOffset = -1;
+        this.positionElementOffset = -1;
     }
 
     public void clear()
@@ -46,13 +48,14 @@ public class VertexFormat
         this.colorElementOffset = -1;
         this.uvOffsetsById.clear();
         this.normalElementOffset = -1;
+        this.positionElementOffset = -1;
         this.nextOffset = 0;
     }
 
     @SuppressWarnings("incomplete-switch")
     public VertexFormat addElement(VertexFormatElement element)
     {
-        if (element.isPositionElement() && this.hasPosition())
+        if (element.isPositionElement() && this.hasPositionInternal())
         {
             LOGGER.warn("VertexFormat error: Trying to add a position VertexFormatElement when one already exists, ignoring.");
             return this;
@@ -74,6 +77,11 @@ public class VertexFormat
 
                 case UV:
                     this.uvOffsetsById.add(element.getIndex(), Integer.valueOf(this.nextOffset));
+                    break;
+                
+                case POSITION:
+                    this.positionElementOffset = this.nextOffset;
+                    break;
             }
 
             this.nextOffset += element.getSize();
@@ -111,6 +119,14 @@ public class VertexFormat
         return ((Integer)this.uvOffsetsById.get(id)).intValue();
     }
 
+    public boolean hasPosition() {
+        return this.positionElementOffset >= 0;
+    }
+
+    public int getPositionOffset() {
+        return this.positionElementOffset;
+    }
+
     public String toString()
     {
         String s = "format: " + this.elements.size() + " elements: ";
@@ -128,7 +144,7 @@ public class VertexFormat
         return s;
     }
 
-    private boolean hasPosition()
+    private boolean hasPositionInternal()
     {
         int i = 0;
 

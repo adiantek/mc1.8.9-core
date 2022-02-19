@@ -1042,7 +1042,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public static void checkGLError(String message)
     {
-        if (!Core.CORE) {
+        if (!Core.CORE || true) {
             return;
         }
         if (Minecraft.theMinecraft.enableGLErrorChecking)

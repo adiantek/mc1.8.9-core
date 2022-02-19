@@ -44,6 +44,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;
@@ -1730,7 +1731,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 Shaders.preSkyList();
             }
 
-            if (Config.isSkyEnabled())
+            if (Config.isSkyEnabled() && !Core.CORE)
             {
                 // if (this.vboEnabled)
                 // {
@@ -1873,7 +1874,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             float f17 = this.theWorld.getStarBrightness(partialTicks) * f15;
 
-            if (f17 > 0.0F && Config.isStarsEnabled() && !CustomSky.hasSkyLayers(this.theWorld))
+            if (f17 > 0.0F && Config.isStarsEnabled() && !CustomSky.hasSkyLayers(this.theWorld) && !Core.CORE)
             {
                 GlStateManager.color(f17, f17, f17, f17);
 
@@ -1920,12 +1921,14 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
                 // if (this.vboEnabled)
                 // {
+                if (!Core.CORE) {
                     this.sky2VBO.bindBuffer();
                     GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
                     this.sky2VBO.drawArrays(7);
                     this.sky2VBO.unbindBuffer();
                     GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                }
                 // }
                 // else
                 // {
@@ -1977,7 +1980,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.0F, -((float)(d0 - 16.0D)), 0.0F);
 
-            if (Config.isSkyEnabled())
+            if (Config.isSkyEnabled() && !Core.CORE)
             {
                 // if (this.vboEnabled)
                 // {

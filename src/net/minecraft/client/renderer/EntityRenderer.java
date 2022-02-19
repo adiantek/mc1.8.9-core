@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
@@ -2062,7 +2064,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
             Tessellator tessellator = Tessellator.getInstance();
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             GlStateManager.disableCull();
-            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            if (!Core.CORE) {
+                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            }
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
@@ -2432,9 +2436,10 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             flag = ((EntityPlayer)entity).capabilities.isCreativeMode;
         }
-
-        GL11.glFog(GL11.GL_FOG_COLOR, (FloatBuffer)this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
-        GL11.glNormal3f(0.0F, -1.0F, 0.0F);
+        if (!Core.CORE) {
+            GL11.glFog(GL11.GL_FOG_COLOR, (FloatBuffer)this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
+            GL11.glNormal3f(0.0F, -1.0F, 0.0F);
+        }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(this.mc.theWorld, entity, partialTicks);
         float f = -1.0F;
@@ -2518,16 +2523,18 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 GlStateManager.setFogEnd(f3);
             }
 
-            if (GLContext.getCapabilities().GL_NV_fog_distance)
-            {
-                if (Config.isFogFancy())
+            if (!Core.CORE) {
+                if (GLContext.getCapabilities().GL_NV_fog_distance)
                 {
-                    GL11.glFogi(34138, 34139);
-                }
+                    if (Config.isFogFancy())
+                    {
+                        GL11.glFogi(34138, 34139);
+                    }
 
-                if (Config.isFogFast())
-                {
-                    GL11.glFogi(34138, 34140);
+                    if (Config.isFogFast())
+                    {
+                        GL11.glFogi(34138, 34140);
+                    }
                 }
             }
 
