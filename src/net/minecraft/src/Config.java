@@ -26,6 +26,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+
+import net.core.Core;
 import net.minecraft.client.LoadingScreenRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -2504,6 +2506,9 @@ public class Config
 
     public static boolean isQuadsToTriangles()
     {
+        if (Core.CORE) {
+            return true;
+        }
         return !isShaders() ? false : !Shaders.canRenderQuads();
     }
 

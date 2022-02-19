@@ -1,5 +1,6 @@
 package net.optifine.render;
 
+import net.core.Core;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,6 +27,9 @@ public class CloudRenderer
     public CloudRenderer(Minecraft mc)
     {
         this.mc = mc;
+        if (Core.CORE) {
+            return;
+        }
         this.glListClouds = GLAllocation.generateDisplayLists(1);
     }
 
@@ -74,12 +78,17 @@ public class CloudRenderer
 
     public void startUpdateGlList()
     {
+        if (Core.CORE) {
+            return;
+        }
         GL11.glNewList(this.glListClouds, GL11.GL_COMPILE);
     }
 
     public void endUpdateGlList()
     {
-        GL11.glEndList();
+        if (!Core.CORE) {
+            GL11.glEndList();
+        }
         this.updateRenderFancy = this.renderFancy;
         this.updateCloudTickCounter = this.cloudTickCounter;
         this.updateCloudColor = this.cloudColor;

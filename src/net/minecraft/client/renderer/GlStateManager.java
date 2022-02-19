@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 
+import net.core.Core;
 import net.core.Matrix4f;
 import net.core.PoseStack;
 
@@ -102,6 +103,9 @@ public class GlStateManager
             {
                 alphaState.func = func;
                 alphaState.ref = ref;
+                if (Core.CORE) {
+                    return;
+                }
                 GL11.glAlphaFunc(func, ref);
             }
         }
@@ -297,6 +301,9 @@ public class GlStateManager
         if (param != fogState.start)
         {
             fogState.start = param;
+            if (Core.CORE) {
+                return;
+            }
             GL11.glFogf(GL11.GL_FOG_START, param);
         }
     }
@@ -306,17 +313,26 @@ public class GlStateManager
         if (param != fogState.end)
         {
             fogState.end = param;
+            if (Core.CORE) {
+                return;
+            }
             GL11.glFogf(GL11.GL_FOG_END, param);
         }
     }
 
     public static void glFog(int p_glFog_0_, FloatBuffer p_glFog_1_)
     {
+        if (Core.CORE) {
+            return;
+        }
         GL11.glFog(p_glFog_0_, p_glFog_1_);
     }
 
     public static void glFogi(int p_glFogi_0_, int p_glFogi_1_)
     {
+        if (Core.CORE) {
+            return;
+        }
         GL11.glFogi(p_glFogi_0_, p_glFogi_1_);
     }
 
@@ -503,6 +519,9 @@ public class GlStateManager
         if (mode != activeShadeModel)
         {
             activeShadeModel = mode;
+            if (Core.CORE) {
+                return;
+            }
             GL11.glShadeModel(mode);
         }
     }
@@ -756,6 +775,9 @@ public class GlStateManager
 
     public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha)
     {
+        if (Core.CORE) {
+            return;
+        }
         if (colorRed != colorState.red || colorGreen != colorState.green || colorBlue != colorState.blue || colorAlpha != colorState.alpha)
         {
             colorState.red = colorRed;
@@ -828,8 +850,8 @@ public class GlStateManager
     }
 
     public static void load() {
-        if (true) {
-            // return;
+        if (Core.CORE) {
+            return;
         }
         {
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -852,15 +874,6 @@ public class GlStateManager
             FB.limit(16);
             GL11.glLoadMatrix(FB);
         }
-        // if (CURRENT_STACK == MODELVIEW_STACK) {
-        //     GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        // } else if (CURRENT_STACK == PROJECTION_STACK) {
-        //     GL11.glMatrixMode(GL11.GL_PROJECTION);
-        // } else if (textureLoaded) {
-        //     GL11.glMatrixMode(GL11.GL_TEXTURE);
-        // } else {
-        //     throw new UnsupportedOperationException("jaka to macierz");
-        // }
     }
 
     public static void glEnd()

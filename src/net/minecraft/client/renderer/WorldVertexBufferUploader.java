@@ -2,6 +2,8 @@ package net.minecraft.client.renderer;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import net.core.Core;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.src.Config;
@@ -47,25 +49,33 @@ public class WorldVertexBufferUploader
                     switch (vertexformatelement$enumusage)
                     {
                         case POSITION:
-                            GL11.glVertexPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glVertexPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
+                                GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                            }
                             break;
 
                         case UV:
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + l);
-                            GL11.glTexCoordPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                            GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glTexCoordPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
+                                GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                            }
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
                             break;
 
                         case COLOR:
-                            GL11.glColorPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                            GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glColorPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
+                                GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+                            }
                             break;
 
                         case NORMAL:
-                            GL11.glNormalPointer(k, i, bytebuffer);
-                            GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+                            if (!Core.CORE) {
+                                GL11.glNormalPointer(k, i, bytebuffer);
+                                GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+                            }
                     }
                 }
             }

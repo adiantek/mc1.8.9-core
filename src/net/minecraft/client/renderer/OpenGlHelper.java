@@ -5,6 +5,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.core.Core;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.src.Config;
@@ -917,6 +919,9 @@ public class OpenGlHelper
      */
     public static void setClientActiveTexture(int texture)
     {
+        if (Core.CORE) {
+            return;
+        }
         if (arbMultitexture)
         {
             ARBMultitexture.glClientActiveTextureARB(texture);
