@@ -3034,7 +3034,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public static long getSystemTime()
     {
-        return (long) (GLFW.glfwGetTime() * 1000);
+        return Sys.getMS();
     }
 
     /**

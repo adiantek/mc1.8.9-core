@@ -50,6 +50,10 @@ public class Sys {
 		return GLFW.glfwGetTimerValue();
 	}
 
+	public static long getMS() {
+		return (long) (GLFW.glfwGetTime() * 1000);
+	}
+
 	public static long getNanoTime() {
         return System.nanoTime();
 		// return getTime() * 1000L * 1000L;
