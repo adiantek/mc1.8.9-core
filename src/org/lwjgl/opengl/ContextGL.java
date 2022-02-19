@@ -80,7 +80,7 @@ final class ContextGL implements Context {
     private boolean isCurrent;
 
     static {
-        Sys.initialize();
+        // Sys.initialize();
         // implementation = createImplementation();
     }
 

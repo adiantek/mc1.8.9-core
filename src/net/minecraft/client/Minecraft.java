@@ -35,6 +35,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
+
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -932,17 +934,28 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         worldrenderer.pos((double)this.displayWidth, (double)this.displayHeight, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
         worldrenderer.pos((double)this.displayWidth, 0.0D, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
         worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
+        Minecraft.checkGLError("a");
         tessellator.draw();
+        Minecraft.checkGLError("a");
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         int j = 256;
         int k = 256;
+
+        Minecraft.checkGLError("a");
         this.draw((scaledresolution.getScaledWidth() - j) / 2, (scaledresolution.getScaledHeight() - k) / 2, 0, 0, j, k, 255, 255, 255, 255);
+        Minecraft.checkGLError("a");
         GlStateManager.disableLighting();
+        Minecraft.checkGLError("a");
         GlStateManager.disableFog();
+        Minecraft.checkGLError("a");
         framebuffer.unbindFramebuffer();
+        Minecraft.checkGLError("a");
         framebuffer.framebufferRender(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i);
+        Minecraft.checkGLError("a");
         GlStateManager.enableAlpha();
+        Minecraft.checkGLError("a");
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        Minecraft.checkGLError("a");
         this.updateDisplay();
     }
 
@@ -1027,18 +1040,29 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     /**
      * Checks for an OpenGL error. If there is one, prints the error ID and error string.
      */
-    private void checkGLError(String message)
+    public static void checkGLError(String message)
     {
-        if (this.enableGLErrorChecking)
+        if (!Core.CORE) {
+            return;
+        }
+        if (Minecraft.theMinecraft.enableGLErrorChecking)
         {
-            int i = GL11.glGetError();
-
-            if (i != 0)
+            while (true)
             {
-                String s = GLU.gluErrorString(i);
-                logger.error("########## GL ERROR ##########");
-                logger.error("@ " + message);
-                logger.error(i + ": " + s);
+                int i = GL11.glGetError();
+    
+                if (i != 0)
+                {
+                    String s = GLU.gluErrorString(i);
+                    logger.error("########## GL ERROR ##########");
+                    logger.error("@ " + message + " " + Thread.currentThread().getStackTrace()[2]);
+                    logger.error(i + ": " + s);
+                    logger.error("");
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

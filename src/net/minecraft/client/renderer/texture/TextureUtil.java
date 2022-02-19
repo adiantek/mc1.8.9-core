@@ -23,15 +23,34 @@ import org.lwjgl.opengl.GL12;
 public class TextureUtil
 {
     private static final Logger logger = LogManager.getLogger();
+
+    static {
+        Minecraft.checkGLError("initialize TextureUtil");
+    }
     private static final IntBuffer dataBuffer = GLAllocation.createDirectIntBuffer(4194304);
+
+    static {
+        Minecraft.checkGLError("initialize TextureUtil");
+    }
     public static final DynamicTexture missingTexture = new DynamicTexture(16, 16);
+
+    static {
+        Minecraft.checkGLError("initialize TextureUtil");
+    }
     public static final int[] missingTextureData = missingTexture.getTextureData();
     private static final int[] mipmapBuffer;
     private static int[] dataArray = new int[4194304];
 
+    static {
+        Minecraft.checkGLError("initialize TextureUtil");
+    }
+
     public static int glGenTextures()
     {
-        return GlStateManager.generateTexture();
+        Minecraft.checkGLError("before generateTexture");
+        int tex = GlStateManager.generateTexture();
+        Minecraft.checkGLError("after generateTexture = " + tex);
+        return tex;
     }
 
     public static void deleteTexture(int textureId)
@@ -153,6 +172,7 @@ public class TextureUtil
 
     public static void allocateTextureImpl(int p_180600_0_, int p_180600_1_, int p_180600_2_, int p_180600_3_)
     {
+        Minecraft.checkGLError("a");
         Object object = TextureUtil.class;
 
         if (Reflector.SplashScreen.exists())
@@ -162,9 +182,13 @@ public class TextureUtil
 
         synchronized (object)
         {
-            deleteTexture(p_180600_0_);
+            Minecraft.checkGLError("a");
+            // deleteTexture(p_180600_0_);
+            Minecraft.checkGLError("a");
             bindTexture(p_180600_0_);
+            Minecraft.checkGLError("a");
         }
+        Minecraft.checkGLError("a");
 
         if (p_180600_1_ >= 0)
         {
@@ -173,11 +197,13 @@ public class TextureUtil
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, (float)p_180600_1_);
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0.0F);
         }
+        Minecraft.checkGLError("a");
 
         for (int i = 0; i <= p_180600_1_; ++i)
         {
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i, GL11.GL_RGBA, p_180600_2_ >> i, p_180600_3_ >> i, 0, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, (IntBuffer)((IntBuffer)null));
         }
+        Minecraft.checkGLError("a");
     }
 
     public static int uploadTextureImageSub(int textureId, BufferedImage p_110995_1_, int p_110995_2_, int p_110995_3_, boolean p_110995_4_, boolean p_110995_5_)
@@ -262,7 +288,9 @@ public class TextureUtil
 
     static void bindTexture(int p_94277_0_)
     {
+        Minecraft.checkGLError("a");
         GlStateManager.bindTexture(p_94277_0_);
+        Minecraft.checkGLError("a");
     }
 
     public static int[] readImageData(IResourceManager resourceManager, ResourceLocation imageLocation) throws IOException

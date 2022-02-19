@@ -2,6 +2,8 @@ package net.minecraft.client.renderer.texture;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManager;
 
 public class DynamicTexture extends AbstractTexture
@@ -26,7 +28,9 @@ public class DynamicTexture extends AbstractTexture
         this.width = textureWidth;
         this.height = textureHeight;
         this.dynamicTextureData = new int[textureWidth * textureHeight];
+        Minecraft.checkGLError("a");
         TextureUtil.allocateTexture(this.getGlTextureId(), textureWidth, textureHeight);
+        Minecraft.checkGLError("a");
     }
 
     public void loadTexture(IResourceManager resourceManager) throws IOException

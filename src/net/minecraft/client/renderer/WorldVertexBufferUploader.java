@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import net.core.Core;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.src.Config;
@@ -23,6 +24,7 @@ public class WorldVertexBufferUploader
                 p_181679_1_.quadsToTriangles();
             }
 
+            Minecraft.checkGLError("a");
             GlStateManager.load();
             VertexFormat vertexformat = p_181679_1_.getVertexFormat();
             int i = vertexformat.getNextOffset();
@@ -79,19 +81,24 @@ public class WorldVertexBufferUploader
                     }
                 }
             }
+            Minecraft.checkGLError("a");
 
             if (p_181679_1_.isMultiTexture())
             {
                 p_181679_1_.drawMultiTexture();
+                Minecraft.checkGLError("a");
             }
             else if (Config.isShaders())
             {
                 SVertexBuilder.drawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount(), p_181679_1_);
+                Minecraft.checkGLError("a");
             }
             else
             {
                 GlStateManager.load();
+                Minecraft.checkGLError("a");
                 GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount());
+                Minecraft.checkGLError("a");
             }
 
             int j1 = 0;
@@ -139,6 +146,7 @@ public class WorldVertexBufferUploader
                     }
                 }
             }
+            Minecraft.checkGLError("a");
         }
 
         p_181679_1_.reset();

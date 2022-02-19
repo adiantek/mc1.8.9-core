@@ -17,7 +17,7 @@
             "request": "launch",
             "mainClass": "Start",
             "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
+            "vmArgs": "-Djava.library.path=natives_amd64 -Xmx2G"
         },
         {
             "type": "java",

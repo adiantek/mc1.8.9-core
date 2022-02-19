@@ -3,6 +3,8 @@ package net.minecraft.client.renderer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.Config;
 import net.optifine.SmartAnimations;
 import net.optifine.render.GlAlphaState;
@@ -59,7 +61,7 @@ public class GlStateManager
 
     public static void pushAttrib()
     {
-        GL11.glPushAttrib(8256);
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT);
     }
 
     public static void popAttrib()
@@ -445,11 +447,13 @@ public class GlStateManager
     {
         if (activeTextureUnit != texture - OpenGlHelper.defaultTexUnit)
         {
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
-            FB.position(0);
-            FB.limit(16);
-            GL11.glLoadMatrix(FB);
+            if (!Core.CORE) {
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
+                FB.position(0);
+                FB.limit(16);
+                GL11.glLoadMatrix(FB);
+            }
 
             activeTextureUnit = texture - OpenGlHelper.defaultTexUnit;
             OpenGlHelper.setActiveTexture(texture);
@@ -476,6 +480,7 @@ public class GlStateManager
 
     public static void deleteTexture(int texture)
     {
+        System.out.println("deleting: " + texture);
         if (texture != 0)
         {
             GL11.glDeleteTextures(texture);
@@ -492,15 +497,22 @@ public class GlStateManager
 
     public static void bindTexture(int texture)
     {
+        // System.out.println("binding: " + texture);
         if (texture != textureState[activeTextureUnit].textureName)
         {
             textureState[activeTextureUnit].textureName = texture;
+            Minecraft.checkGLError("a");
+            // OpenGlHelper.setActiveTexture(activeTextureUnit + GL13.GL_TEXTURE0);
+            Minecraft.checkGLError("a");
+            
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+            Minecraft.checkGLError("a");
 
             if (SmartAnimations.isActive())
             {
                 SmartAnimations.textureRendered(texture);
             }
+            Minecraft.checkGLError("a");
         }
     }
 
@@ -600,95 +612,25 @@ public class GlStateManager
             default:
                 throw new UnsupportedOperationException("matrix mode: " + mode);
         }
-        // GL11.glMatrixMode(mode);
-        checkAll();
     }
 
     public static void loadIdentity()
     {
         CURRENT_STACK.setIdentity();
-        // GL11.glLoadIdentity();
-        // load();
-        // checkAll();
     }
 
     public static void pushMatrix()
     {
         CURRENT_STACK.pushPose();
-        // GL11.glPushMatrix();
-        // load();
-        // checkAll();
     }
 
     public static void popMatrix()
     {
         CURRENT_STACK.popPose();
-        // GL11.glPopMatrix();
-        // load();
-        // checkAll();
-    }
-
-    // private static void check(int pname, String debug) {
-    //     FloatBuffer fb = GLAllocation.createDirectFloatBuffer(16);
-    //     GL11.glGetFloat(pname, fb);
-    //     Matrix4f m = new Matrix4f();
-    //     m.load(fb, false);
-    //     float[] arr = new float[16];
-    //     m.write(arr);
-    //     float[] w = new float[16];
-
-    //     PoseStack stack = null;
-
-    //     switch (pname) {
-    //         case GL11.GL_MODELVIEW_MATRIX:
-    //         stack = MODELVIEW_STACK;
-    //         debug = "model";
-    //         break;
-    //         case GL11.GL_PROJECTION_MATRIX:
-    //         stack = PROJECTION_STACK;
-    //         debug = "proj";
-    //         break;
-    //         case GL11.GL_TEXTURE_MATRIX:
-    //         stack = TEXTURE_STACK[activeTextureUnit];
-    //         debug = "tex";
-    //         break;
-    //         default:
-    //         throw new UnsupportedOperationException("invalid pname: " + pname);
-    //     }
-    //     stack.last().pose().write(w);
-    //     float diff = 0;
-    //     for (int i = 0; i < 16; i++) {
-    //         diff = Math.max(diff, Math.abs(w[i] - arr[i]));
-    //     }
-    //     if (diff > 0.001f) {
-    //         System.out.println("DIFF! " + debug +" " + diff);
-    //         System.out.println(matrix(arr));
-    //         System.out.println(matrix(w));
-    //         System.out.println("");
-    //     }
-    // }
-
-    // private static String matrix(float[] f) {
-        // String s = "[";
-        // for (int i = 0; i < 16; i++) {
-        //     if (i > 0 && i % 4 == 0) {
-        //         s += "\n";
-        //     }
-        //     s += String.format("%3.3f   ", f[i]);
-        // }
-        // return s + "]";
-    // }
-
-    private static void checkAll() {
-        // check(GL11.GL_MODELVIEW_MATRIX, "model");
-        // check(GL11.GL_PROJECTION_MATRIX, "proj");
-        // check(GL11.GL_TEXTURE_MATRIX, "tex");
     }
 
     public static void getFloat(int pname, FloatBuffer params)
     {
-        // load();
-        // GL11.glGetFloat(pname, params);
         switch (pname) {
             case GL11.GL_MODELVIEW_MATRIX:
                 MODELVIEW_STACK.last().pose().store(params);
@@ -700,13 +642,11 @@ public class GlStateManager
                 TEXTURE_STACK[activeTextureUnit].last().pose().store(params);
                 break;
         }
-        // checkAll();
     }
 
     private static final FloatBuffer FB = GLAllocation.createDirectFloatBuffer(16);
     public static void ortho(double left, double right, double bottom, double top, double zNear, double zFar)
     {
-        checkAll();
         FB.clear();
 
         Matrix4f m = Matrix4f.orthographic((float)left, (float)right, (float)top, (float)bottom, (float)zNear, (float)zFar);
@@ -715,34 +655,16 @@ public class GlStateManager
         FB.limit(16);
 
         multMatrix(FB);
-
-        // CURRENT_STACK.mulPoseMatrix(Matrix4f.orthographic((float)left, (float)right, (float)top, (float)bottom, (float)zNear, (float)zFar));
-        // GL11.glOrtho(left, right, bottom, top, zNear, zFar);
-        
-        // load();
-        // checkAll();
     }
 
     public static void rotate(float angle, float x, float y, float z)
     {
-        // checkAll();
-        // load();
-        // checkAll();
         CURRENT_STACK.rotateDeg(angle, x, y, z);
-        // GL11.glRotatef(angle, x, y, z);
-        // checkAll();
-        if (y == 0.0f && z == 0.0f && angle == 165.0f) {
-            // load();
-        }
-        // checkAll();
     }
 
     public static void scale(float x, float y, float z)
     {
         CURRENT_STACK.scale(x, y, z);
-        // load();
-        // GL11.glScalef(x, y, z);
-        // checkAll();
     }
 
     public static void scale(double x, double y, double z)
@@ -753,9 +675,6 @@ public class GlStateManager
     public static void translate(float x, float y, float z)
     {
         CURRENT_STACK.translate(x, y, z);
-        // load();
-        // GL11.glTranslatef(x, y, z);
-        // checkAll();
     }
 
     public static void translate(double x, double y, double z)
@@ -768,23 +687,19 @@ public class GlStateManager
         Matrix4f m = new Matrix4f();
         m.load(matrix, false);
         CURRENT_STACK.mulPoseMatrix(m);
-        // load();
-        // GL11.glMultMatrix(matrix);
-        // checkAll();
     }
 
     public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha)
     {
-        if (Core.CORE) {
-            return;
-        }
         if (colorRed != colorState.red || colorGreen != colorState.green || colorBlue != colorState.blue || colorAlpha != colorState.alpha)
         {
             colorState.red = colorRed;
             colorState.green = colorGreen;
             colorState.blue = colorBlue;
             colorState.alpha = colorAlpha;
-            GL11.glColor4f(colorRed, colorGreen, colorBlue, colorAlpha);
+            if (!Core.CORE) {
+                GL11.glColor4f(colorRed, colorGreen, colorBlue, colorAlpha);
+            }
         }
     }
 
@@ -800,27 +715,37 @@ public class GlStateManager
 
     public static void glNormalPointer(int p_glNormalPointer_0_, int p_glNormalPointer_1_, ByteBuffer p_glNormalPointer_2_)
     {
-        GL11.glNormalPointer(p_glNormalPointer_0_, p_glNormalPointer_1_, p_glNormalPointer_2_);
+        if (!Core.CORE) {
+            GL11.glNormalPointer(p_glNormalPointer_0_, p_glNormalPointer_1_, p_glNormalPointer_2_);
+        }
     }
 
     public static void glTexCoordPointer(int p_glTexCoordPointer_0_, int p_glTexCoordPointer_1_, int p_glTexCoordPointer_2_, int p_glTexCoordPointer_3_)
     {
-        GL11.glTexCoordPointer(p_glTexCoordPointer_0_, p_glTexCoordPointer_1_, p_glTexCoordPointer_2_, (long)p_glTexCoordPointer_3_);
+        if (!Core.CORE) {
+            GL11.glTexCoordPointer(p_glTexCoordPointer_0_, p_glTexCoordPointer_1_, p_glTexCoordPointer_2_, (long)p_glTexCoordPointer_3_);
+        }
     }
 
     public static void glTexCoordPointer(int p_glTexCoordPointer_0_, int p_glTexCoordPointer_1_, int p_glTexCoordPointer_2_, ByteBuffer p_glTexCoordPointer_3_)
     {
-        GL11.glTexCoordPointer(p_glTexCoordPointer_0_, p_glTexCoordPointer_1_, p_glTexCoordPointer_2_, p_glTexCoordPointer_3_);
+        if (!Core.CORE) {
+            GL11.glTexCoordPointer(p_glTexCoordPointer_0_, p_glTexCoordPointer_1_, p_glTexCoordPointer_2_, p_glTexCoordPointer_3_);
+        }
     }
 
     public static void glVertexPointer(int p_glVertexPointer_0_, int p_glVertexPointer_1_, int p_glVertexPointer_2_, int p_glVertexPointer_3_)
     {
-        GL11.glVertexPointer(p_glVertexPointer_0_, p_glVertexPointer_1_, p_glVertexPointer_2_, (long)p_glVertexPointer_3_);
+        if (!Core.CORE) {
+            GL11.glVertexPointer(p_glVertexPointer_0_, p_glVertexPointer_1_, p_glVertexPointer_2_, (long)p_glVertexPointer_3_);
+        }
     }
 
     public static void glVertexPointer(int p_glVertexPointer_0_, int p_glVertexPointer_1_, int p_glVertexPointer_2_, ByteBuffer p_glVertexPointer_3_)
     {
-        GL11.glVertexPointer(p_glVertexPointer_0_, p_glVertexPointer_1_, p_glVertexPointer_2_, p_glVertexPointer_3_);
+        if (!Core.CORE) {
+            GL11.glVertexPointer(p_glVertexPointer_0_, p_glVertexPointer_1_, p_glVertexPointer_2_, p_glVertexPointer_3_);
+        }
     }
 
     public static void glColorPointer(int p_glColorPointer_0_, int p_glColorPointer_1_, int p_glColorPointer_2_, int p_glColorPointer_3_)
@@ -830,17 +755,23 @@ public class GlStateManager
 
     public static void glColorPointer(int p_glColorPointer_0_, int p_glColorPointer_1_, int p_glColorPointer_2_, ByteBuffer p_glColorPointer_3_)
     {
-        GL11.glColorPointer(p_glColorPointer_0_, p_glColorPointer_1_, p_glColorPointer_2_, p_glColorPointer_3_);
+        if (!Core.CORE) {
+            GL11.glColorPointer(p_glColorPointer_0_, p_glColorPointer_1_, p_glColorPointer_2_, p_glColorPointer_3_);
+        }
     }
 
     public static void glDisableClientState(int p_glDisableClientState_0_)
     {
-        GL11.glDisableClientState(p_glDisableClientState_0_);
+        if (!Core.CORE) {
+            GL11.glDisableClientState(p_glDisableClientState_0_);
+        }
     }
 
     public static void glEnableClientState(int p_glEnableClientState_0_)
     {
-        GL11.glEnableClientState(p_glEnableClientState_0_);
+        if (!Core.CORE) {
+            GL11.glEnableClientState(p_glEnableClientState_0_);
+        }
     }
 
     public static void glBegin(int p_glBegin_0_)
@@ -884,7 +815,9 @@ public class GlStateManager
     public static void glDrawArrays(int p_glDrawArrays_0_, int p_glDrawArrays_1_, int p_glDrawArrays_2_)
     {
         GlStateManager.load();
+        Minecraft.checkGLError("before glDrawArrays");
         GL11.glDrawArrays(p_glDrawArrays_0_, p_glDrawArrays_1_, p_glDrawArrays_2_);
+        Minecraft.checkGLError("after glDrawArrays");
 
         if (Config.isShaders() && !creatingDisplayList)
         {
@@ -895,7 +828,9 @@ public class GlStateManager
                 for (int j = 1; j < i; ++j)
                 {
                     Shaders.uniform_instanceId.setValue(j);
+                    Minecraft.checkGLError("before glDrawArrays");
                     GL11.glDrawArrays(p_glDrawArrays_0_, p_glDrawArrays_1_, p_glDrawArrays_2_);
+                    Minecraft.checkGLError("after glDrawArrays");
                 }
 
                 Shaders.uniform_instanceId.setValue(0);
@@ -1197,7 +1132,7 @@ public class GlStateManager
 
         private AlphaState()
         {
-            this.alphaTest = new GlStateManager.BooleanState(3008);
+            this.alphaTest = new GlStateManager.BooleanState(GL11.GL_ALPHA_TEST);
             this.func = 519;
             this.ref = -1.0F;
         }
@@ -1246,7 +1181,14 @@ public class GlStateManager
             if (state != this.currentState)
             {
                 this.currentState = state;
-
+                if (Core.CORE) {
+                    if (this.capability == GL11.GL_ALPHA_TEST ||
+                        this.capability == GL11.GL_TEXTURE_2D ||
+                        this.capability == GL11.GL_COLOR_MATERIAL) {
+                        return;
+                    }
+                }
+                Minecraft.checkGLError("before glEnable/glDisable");
                 if (state)
                 {
                     GL11.glEnable(this.capability);
@@ -1255,6 +1197,7 @@ public class GlStateManager
                 {
                     GL11.glDisable(this.capability);
                 }
+                Minecraft.checkGLError("after glEnable/glDisable: " + state + "; " + this.capability);
             }
         }
     }

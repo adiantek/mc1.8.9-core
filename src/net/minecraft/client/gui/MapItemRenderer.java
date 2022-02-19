@@ -1,6 +1,9 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Maps;
+
+import org.lwjgl.opengl.GL11;
+
 import java.util.Map;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
@@ -107,6 +110,11 @@ public class MapItemRenderer
 
         private void render(boolean noOverlayRendering)
         {
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.loadIdentity();
+            GlStateManager.translate(0.0F, 0.0f, 100.0f);
+            // GlStateManager.rotate(90, 0, 1, 0);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
             int i = 0;
             int j = 0;
             Tessellator tessellator = Tessellator.getInstance();
@@ -157,6 +165,11 @@ public class MapItemRenderer
             GlStateManager.translate(0.0F, 0.0F, -0.04F);
             GlStateManager.scale(1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
+            
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.loadIdentity();
+            // GlStateManager.rotate(90, 0, 1, 0);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
     }
 }

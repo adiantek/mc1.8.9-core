@@ -11,6 +11,7 @@ import org.lwjgl.system.MemoryUtil;
 import javax.annotation.*;
 import java.nio.*;
 import java.util.*;
+import java.util.function.IntFunction;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.EXTThreadLocalContext.*;
@@ -204,11 +205,24 @@ public final class AL {
     /**
      * Creates a new {@link ALCapabilities} instance for the OpenAL context that is current in the current thread or process.
      *
+     * <p>This method calls {@link #setCurrentProcess} (or {@link #setCurrentThread} if applicable) with the new instance before returning.</p>
+     *
      * @param alcCaps the {@link ALCCapabilities} of the device associated with the current context
      *
      * @return the ALCapabilities instance
      */
     public static ALCapabilities createCapabilities(ALCCapabilities alcCaps) {
+        return createCapabilities(alcCaps, null);
+    }
+
+    /**
+     * Creates a new {@link ALCapabilities} instance for the OpenAL context that is current in the current thread or process.
+     *
+     * @param alcCaps the {@link ALCCapabilities} of the device associated with the current context
+     *
+     * @return the ALCapabilities instance
+     */
+    public static ALCapabilities createCapabilities(ALCCapabilities alcCaps, IntFunction<PointerBuffer> bufferFactory) {
         FunctionProvider functionProvider = ALC.check(AL.functionProvider);
 
         ALCapabilities caps = null;
@@ -266,7 +280,7 @@ public final class AL {
                 supportedExtensions.add("ALC_EXT_EFX");
             }
 
-            return caps = new ALCapabilities(functionProvider, supportedExtensions);
+            return caps = new ALCapabilities(functionProvider, supportedExtensions, bufferFactory == null ? BufferUtils::createPointerBuffer : bufferFactory);
         } finally {
             if (alcCaps.ALC_EXT_thread_local_context && alcGetThreadContext() != NULL) {
                 setCurrentThread(caps);
