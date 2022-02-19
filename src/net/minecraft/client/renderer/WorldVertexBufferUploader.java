@@ -63,7 +63,7 @@ public class WorldVertexBufferUploader
                         case POSITION:
                             if (!Core.CORE) {
                                 GL11.glVertexPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                                GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                                GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                             }
                             break;
 
@@ -71,7 +71,7 @@ public class WorldVertexBufferUploader
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + l);
                             if (!Core.CORE) {
                                 GL11.glTexCoordPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                                GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                                GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
                             }
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
                             break;
@@ -79,14 +79,14 @@ public class WorldVertexBufferUploader
                         case COLOR:
                             if (!Core.CORE) {
                                 GL11.glColorPointer(vertexformatelement.getElementCount(), k, i, bytebuffer);
-                                GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+                                GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
                             }
                             break;
 
                         case NORMAL:
                             if (!Core.CORE) {
                                 GL11.glNormalPointer(k, i, bytebuffer);
-                                GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+                                GlStateManager.glEnableClientState(GL11.GL_NORMAL_ARRAY);
                             }
                     }
                 }
@@ -130,28 +130,28 @@ public class WorldVertexBufferUploader
                     {
                         case POSITION:
                             if (!Core.CORE) {
-                                GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                                GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
                             }
                             break;
 
                         case UV:
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + i1);
                             if (!Core.CORE) {
-                                GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                                GlStateManager.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
                             }
                             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
                             break;
 
                         case COLOR:
                             if (!Core.CORE) {
-                                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                                GlStateManager.glDisableClientState(GL11.GL_COLOR_ARRAY);
                             }
                             GlStateManager.resetColor();
                             break;
 
                         case NORMAL:
                             if (!Core.CORE) {
-                                GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+                                GlStateManager.glDisableClientState(GL11.GL_NORMAL_ARRAY);
                             }
                     }
                 }
@@ -176,6 +176,12 @@ public class WorldVertexBufferUploader
         }
         if (vertexformat == DefaultVertexFormats.POSITION) {
             program = Program.POS;
+        }
+        if (vertexformat == DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL) {
+            program = Program.POS_TEX_COLOR_NORMAL;
+        }
+        if (vertexformat == DefaultVertexFormats.POSITION_TEX_NORMAL || vertexformat == DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL) {
+            program = Program.POS_TEX_NORMAL;
         }
 
         if (program == null) {

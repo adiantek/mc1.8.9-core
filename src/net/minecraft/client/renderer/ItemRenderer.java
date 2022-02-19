@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer;
 
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -216,7 +217,9 @@ public class ItemRenderer
         this.mc.getTextureManager().bindTexture(RES_MAP_BACKGROUND);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GL11.glNormal3f(0.0F, 0.0F, -1.0F);
+        if (!Core.CORE) {
+            GL11.glNormal3f(0.0F, 0.0F, -1.0F);
+        }
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
         worldrenderer.pos(-7.0D, 135.0D, 0.0D).tex(0.0D, 1.0D).endVertex();
         worldrenderer.pos(135.0D, 135.0D, 0.0D).tex(1.0D, 1.0D).endVertex();

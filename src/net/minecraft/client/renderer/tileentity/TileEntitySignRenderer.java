@@ -1,6 +1,8 @@
 package net.minecraft.client.renderer.tileentity;
 
 import java.util.List;
+
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -91,7 +93,9 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
             float f3 = 0.015625F * f;
             GlStateManager.translate(0.0F, 0.5F * f, 0.07F * f);
             GlStateManager.scale(f3, -f3, f3);
-            GL11.glNormal3f(0.0F, 0.0F, -1.0F * f3);
+            if (!Core.CORE) {
+                GL11.glNormal3f(0.0F, 0.0F, -1.0F * f3);
+            }
             GlStateManager.depthMask(false);
             int i = 0;
 

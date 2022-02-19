@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
+import net.core.Core;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -370,7 +371,9 @@ public abstract class Render<T extends Entity> implements IEntityRenderer
             float f1 = 0.016666668F * f;
             GlStateManager.pushMatrix();
             GlStateManager.translate((float)x + 0.0F, (float)y + entityIn.height + 0.5F, (float)z);
-            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            if (!Core.CORE) {
+                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+            }
             GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
             GlStateManager.scale(-f1, -f1, f1);

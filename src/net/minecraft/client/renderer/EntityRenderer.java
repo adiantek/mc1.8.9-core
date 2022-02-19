@@ -1067,13 +1067,16 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
     public void enableLightmap()
     {
+        Minecraft.checkGLError("a");
         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GlStateManager.matrixMode(5890);
         GlStateManager.loadIdentity();
+        Minecraft.checkGLError("a");
         float f = 0.00390625F;
         GlStateManager.scale(f, f, f);
         GlStateManager.translate(8.0F, 8.0F, 8.0F);
         GlStateManager.matrixMode(5888);
+        Minecraft.checkGLError("a");
         this.mc.getTextureManager().bindTexture(this.locationLightMap);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
@@ -1561,6 +1564,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         boolean flag1 = this.isDrawBlockOutline();
         GlStateManager.enableCull();
         this.mc.mcProfiler.endStartSection("clear");
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
@@ -1581,6 +1585,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         this.mc.mcProfiler.endStartSection("camera");
         this.setupCameraTransform(partialTicks, pass);
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
@@ -1591,6 +1596,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         this.mc.mcProfiler.endStartSection("frustum");
         ClippingHelper clippinghelper = ClippingHelperImpl.getInstance();
         this.mc.mcProfiler.endStartSection("culling");
+        Minecraft.checkGLError("a");
         clippinghelper.disabled = Config.isShaders() && !Shaders.isFrustumCulling();
         ICamera icamera = new Frustum(clippinghelper);
         Entity entity = this.mc.getRenderViewEntity();
@@ -1640,17 +1646,20 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         this.setupFog(0, partialTicks);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        Minecraft.checkGLError("a");
 
         if (entity.posY + (double)entity.getEyeHeight() < 128.0D + (double)(this.mc.gameSettings.ofCloudsHeight * 128.0F))
         {
             this.renderCloudsCheck(renderglobal, partialTicks, pass);
         }
+        Minecraft.checkGLError("a");
 
         this.mc.mcProfiler.endStartSection("prepareterrain");
         this.setupFog(0, partialTicks);
         this.mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         RenderHelper.disableStandardItemLighting();
         this.mc.mcProfiler.endStartSection("terrain_setup");
+        Minecraft.checkGLError("a");
         this.checkLoadVisibleChunks(entity, partialTicks, icamera, this.mc.thePlayer.isSpectator());
 
         if (flag)
@@ -1672,6 +1681,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
         this.mc.mcProfiler.endStartSection("terrain");
         Lagometer.timerTerrain.start();
+        Minecraft.checkGLError("a");
 
         if (this.mc.gameSettings.ofSmoothFps && pass > 0)
         {
@@ -1679,6 +1689,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             GL11.glFinish();
             this.mc.mcProfiler.endStartSection("terrain");
         }
+        Minecraft.checkGLError("a");
 
         GlStateManager.matrixMode(5888);
         GlStateManager.pushMatrix();
@@ -1689,26 +1700,37 @@ public class EntityRenderer implements IResourceManagerReloadListener
             ShadersRender.beginTerrainSolid();
         }
 
+        Minecraft.checkGLError("a");
         renderglobal.renderBlockLayer(EnumWorldBlockLayer.SOLID, (double)partialTicks, pass, entity);
+        Minecraft.checkGLError("a");
         GlStateManager.enableAlpha();
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
             ShadersRender.beginTerrainCutoutMipped();
         }
 
+        Minecraft.checkGLError("a");
         this.mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, this.mc.gameSettings.mipmapLevels > 0);
+        Minecraft.checkGLError("a");
         renderglobal.renderBlockLayer(EnumWorldBlockLayer.CUTOUT_MIPPED, (double)partialTicks, pass, entity);
+        Minecraft.checkGLError("a");
         this.mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
+        Minecraft.checkGLError("a");
         this.mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
             ShadersRender.beginTerrainCutout();
         }
+        Minecraft.checkGLError("a");
 
         renderglobal.renderBlockLayer(EnumWorldBlockLayer.CUTOUT, (double)partialTicks, pass, entity);
+        Minecraft.checkGLError("a");
         this.mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
@@ -1821,6 +1843,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             GlStateManager.depthMask(Shaders.isRainDepth());
         }
+        Minecraft.checkGLError("a");
 
         GlStateManager.enableCull();
         this.mc.mcProfiler.endStartSection("weather");
@@ -1829,6 +1852,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             Shaders.beginWeather();
         }
+        Minecraft.checkGLError("a");
 
         this.renderRainSnow(partialTicks);
 
@@ -1836,6 +1860,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             Shaders.endWeather();
         }
+        Minecraft.checkGLError("a");
 
         GlStateManager.depthMask(true);
         renderglobal.renderWorldBorder(entity, partialTicks);
@@ -1845,6 +1870,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
             ShadersRender.renderHand0(this, partialTicks, pass);
             Shaders.preWater();
         }
+        Minecraft.checkGLError("a");
 
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
@@ -1861,6 +1887,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             Shaders.beginWater();
         }
+        Minecraft.checkGLError("a");
 
         renderglobal.renderBlockLayer(EnumWorldBlockLayer.TRANSLUCENT, (double)partialTicks, pass, entity);
 
@@ -1868,6 +1895,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             Shaders.endWater();
         }
+        Minecraft.checkGLError("a");
 
         if (Reflector.ForgeHooksClient_setRenderPass.exists() && !this.debugView)
         {
@@ -1879,10 +1907,12 @@ public class EntityRenderer implements IResourceManagerReloadListener
             Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
             RenderHelper.disableStandardItemLighting();
         }
+        Minecraft.checkGLError("a");
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.depthMask(true);
         GlStateManager.enableCull();
+        Minecraft.checkGLError("a");
         GlStateManager.disableBlend();
         GlStateManager.disableFog();
 

@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
+import net.core.Core;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -53,14 +54,18 @@ public class RenderArrow extends Render<EntityArrow>
         GlStateManager.rotate(45.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(f8, f8, f8);
         GlStateManager.translate(-4.0F, 0.0F, 0.0F);
-        GL11.glNormal3f(f8, 0.0F, 0.0F);
+        if (!Core.CORE) {
+            GL11.glNormal3f(f8, 0.0F, 0.0F);
+        }
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
         worldrenderer.pos(-7.0D, -2.0D, -2.0D).tex((double)f4, (double)f6).endVertex();
         worldrenderer.pos(-7.0D, -2.0D, 2.0D).tex((double)f5, (double)f6).endVertex();
         worldrenderer.pos(-7.0D, 2.0D, 2.0D).tex((double)f5, (double)f7).endVertex();
         worldrenderer.pos(-7.0D, 2.0D, -2.0D).tex((double)f4, (double)f7).endVertex();
         tessellator.draw();
-        GL11.glNormal3f(-f8, 0.0F, 0.0F);
+        if (!Core.CORE) {
+            GL11.glNormal3f(-f8, 0.0F, 0.0F);
+        }
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
         worldrenderer.pos(-7.0D, 2.0D, -2.0D).tex((double)f4, (double)f6).endVertex();
         worldrenderer.pos(-7.0D, 2.0D, 2.0D).tex((double)f5, (double)f6).endVertex();
@@ -71,7 +76,9 @@ public class RenderArrow extends Render<EntityArrow>
         for (int j = 0; j < 4; ++j)
         {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glNormal3f(0.0F, 0.0F, f8);
+            if (!Core.CORE) {
+                GL11.glNormal3f(0.0F, 0.0F, f8);
+            }
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex((double)f, (double)f2).endVertex();
             worldrenderer.pos(8.0D, -2.0D, 0.0D).tex((double)f1, (double)f2).endVertex();

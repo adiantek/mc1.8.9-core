@@ -41,10 +41,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import net.core.Core;
+import net.core.Program;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;
@@ -351,6 +353,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.sky2VBO.bufferData(worldrenderer.getByteBuffer());
+
+            Program program = Program.POS_SKY2_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao);
+            this.sky2VBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.sky2VBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
         // }
         // else
         // {
@@ -385,6 +396,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.skyVBO.bufferData(worldrenderer.getByteBuffer());
+
+            Program program = Program.POS_SKY_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao);
+            this.skyVBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.skyVBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
         // }
         // else
         // {
@@ -400,7 +420,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     {
         int i = 64;
         int j = 6;
-        worldRendererIn.begin(7, DefaultVertexFormats.POSITION);
+        worldRendererIn.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         int k = (this.renderDistance / 64 + 1) * 64 + 64;
 
         for (int l = -k; l <= k; l += 64)
@@ -416,10 +436,19 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     f = (float)(l + 64);
                 }
 
-                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex();
-                worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex();
-                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex();
-                worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex();
+                // worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
+                // worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex(); // 2
+                // worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
+                // worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex(); // 4
+
+                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
+                worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex(); // 2
+                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
+
+                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
+                worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex(); // 4
+                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
+
             }
         }
     }
@@ -447,6 +476,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             worldrenderer.finishDrawing();
             worldrenderer.reset();
             this.starVBO.bufferData(worldrenderer.getByteBuffer());
+
+            Program program = Program.POS_STARS_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao);
+            this.starVBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.starVBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
         // }
         // else
         // {
@@ -463,7 +501,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private void renderStars(WorldRenderer worldRendererIn)
     {
         Random random = new Random(10842L);
-        worldRendererIn.begin(7, DefaultVertexFormats.POSITION);
+        worldRendererIn.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
 
         for (int i = 0; i < 1500; ++i)
         {
@@ -492,7 +530,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 double d15 = Math.sin(d14);
                 double d16 = Math.cos(d14);
 
-                for (int j = 0; j < 4; ++j)
+                for (int j : new int[] {0, 1, 2, 2, 3, 0})
                 {
                     double d17 = 0.0D;
                     double d18 = (double)((j & 2) - 1) * d3;
@@ -647,12 +685,14 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     public void renderEntities(Entity renderViewEntity, ICamera camera, float partialTicks)
     {
+        Minecraft.checkGLError("a");
         int i = 0;
 
         if (Reflector.MinecraftForgeClient_getRenderPass.exists())
         {
             i = Reflector.callInt(Reflector.MinecraftForgeClient_getRenderPass, new Object[0]);
         }
+        Minecraft.checkGLError("a");
 
         if (this.renderEntitiesStartupCounter > 0)
         {
@@ -665,13 +705,18 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
         else
         {
+            Minecraft.checkGLError("a");
             double d0 = renderViewEntity.prevPosX + (renderViewEntity.posX - renderViewEntity.prevPosX) * (double)partialTicks;
             double d1 = renderViewEntity.prevPosY + (renderViewEntity.posY - renderViewEntity.prevPosY) * (double)partialTicks;
             double d2 = renderViewEntity.prevPosZ + (renderViewEntity.posZ - renderViewEntity.prevPosZ) * (double)partialTicks;
             this.theWorld.theProfiler.startSection("prepare");
+            Minecraft.checkGLError("a");
             TileEntityRendererDispatcher.instance.cacheActiveRenderInfo(this.theWorld, this.mc.getTextureManager(), this.mc.fontRendererObj, this.mc.getRenderViewEntity(), partialTicks);
+            Minecraft.checkGLError("a");
             this.renderManager.cacheActiveRenderInfo(this.theWorld, this.mc.fontRendererObj, this.mc.getRenderViewEntity(), this.mc.pointedEntity, this.mc.gameSettings, partialTicks);
+            Minecraft.checkGLError("a");
             ++renderEntitiesCounter;
+            Minecraft.checkGLError("a");
 
             if (i == 0)
             {
@@ -682,13 +727,16 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             }
 
             Entity entity = this.mc.getRenderViewEntity();
+            Minecraft.checkGLError("a");
             double d3 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
             double d4 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
             double d5 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
             TileEntityRendererDispatcher.staticPlayerX = d3;
             TileEntityRendererDispatcher.staticPlayerY = d4;
             TileEntityRendererDispatcher.staticPlayerZ = d5;
+            Minecraft.checkGLError("a");
             this.renderManager.setRenderPosition(d3, d4, d5);
+            Minecraft.checkGLError("a");
             this.mc.entityRenderer.enableLightmap();
             this.theWorld.theProfiler.endStartSection("global");
             List<Entity> list = this.theWorld.getLoadedEntityList();
@@ -1429,7 +1477,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     public int renderBlockLayer(EnumWorldBlockLayer blockLayerIn, double partialTicks, int pass, Entity entityIn)
     {
+        Minecraft.checkGLError("a");
         RenderHelper.disableStandardItemLighting();
+        Minecraft.checkGLError("a");
 
         if (blockLayerIn == EnumWorldBlockLayer.TRANSLUCENT && !Shaders.isShadowPass)
         {
@@ -1457,6 +1507,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             this.mc.mcProfiler.endSection();
         }
+        Minecraft.checkGLError("a");
 
         this.mc.mcProfiler.startSection("filterempty");
         int l = 0;
@@ -1465,6 +1516,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         int i = flag ? -1 : this.renderInfos.size();
         int j1 = flag ? -1 : 1;
 
+        Minecraft.checkGLError("a");
         for (int j = i1; j != i; j += j1)
         {
             RenderChunk renderchunk = ((RenderGlobal.ContainerLocalRenderInformation)this.renderInfos.get(j)).renderChunk;
@@ -1475,10 +1527,12 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 this.renderContainer.addRenderChunk(renderchunk, blockLayerIn);
             }
         }
+        Minecraft.checkGLError("a");
 
         if (l == 0)
         {
             this.mc.mcProfiler.endSection();
+            Minecraft.checkGLError("a");
             return l;
         }
         else
@@ -1487,10 +1541,14 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             {
                 GlStateManager.disableFog();
             }
+            Minecraft.checkGLError("a");
 
             this.mc.mcProfiler.endStartSection("render_" + blockLayerIn);
+            Minecraft.checkGLError("a");
             this.renderBlockLayer(blockLayerIn);
+            Minecraft.checkGLError("a");
             this.mc.mcProfiler.endSection();
+            Minecraft.checkGLError("a");
             return l;
         }
     }
@@ -1498,30 +1556,35 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     @SuppressWarnings("incomplete-switch")
     private void renderBlockLayer(EnumWorldBlockLayer blockLayerIn)
     {
+        Minecraft.checkGLError("a");
         this.mc.entityRenderer.enableLightmap();
 
         if (OpenGlHelper.useVbo())
         {
-            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+            GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
             OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+            GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
         }
+        Minecraft.checkGLError("a");
 
         if (Config.isShaders())
         {
             ShadersRender.preRenderChunkLayer(blockLayerIn);
         }
+        Minecraft.checkGLError("a");
 
         this.renderContainer.renderChunkLayer(blockLayerIn);
+        Minecraft.checkGLError("a");
 
         if (Config.isShaders())
         {
             ShadersRender.postRenderChunkLayer(blockLayerIn);
         }
+        Minecraft.checkGLError("a");
 
         if (OpenGlHelper.useVbo())
         {
@@ -1529,27 +1592,31 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             {
                 VertexFormatElement.EnumUsage vertexformatelement$enumusage = vertexformatelement.getUsage();
                 int i = vertexformatelement.getIndex();
+                Minecraft.checkGLError("a");
 
                 switch (vertexformatelement$enumusage)
                 {
                     case POSITION:
-                        GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                        GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
                         break;
 
                     case UV:
                         OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + i);
-                        GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                        GlStateManager.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
                         OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
                         break;
 
                     case COLOR:
-                        GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                    GlStateManager.glDisableClientState(GL11.GL_COLOR_ARRAY);
                         GlStateManager.resetColor();
                 }
+                Minecraft.checkGLError("a");
             }
         }
+        Minecraft.checkGLError("a");
 
         this.mc.entityRenderer.disableLightmap();
+        Minecraft.checkGLError("a");
     }
 
     private void cleanupDamagedBlocks(Iterator<DestroyBlockProgress> iteratorIn)
@@ -1731,16 +1798,27 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 Shaders.preSkyList();
             }
 
-            if (Config.isSkyEnabled() && !Core.CORE)
+            if (Config.isSkyEnabled())
             {
                 // if (this.vboEnabled)
                 // {
+                if (Core.CORE) {
+                    Program program = Program.POS_SKY_VBO;
+                    OpenGlHelper.glUseProgram(program.program);
+                    GlStateManager.load(program);
+                    GL30.glBindVertexArray(program.vao);
                     this.skyVBO.bindBuffer();
-                    GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                    this.skyVBO.drawArrays(4);
+                    GL30.glBindVertexArray(0);
+                    OpenGlHelper.glUseProgram(0);
+                } else {
+                    this.skyVBO.bindBuffer();
+                    GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
-                    this.skyVBO.drawArrays(7);
+                    this.skyVBO.drawArrays(4);
                     this.skyVBO.unbindBuffer();
-                    GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                    GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                }
                 // }
                 // else
                 // {
@@ -1874,18 +1952,30 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             float f17 = this.theWorld.getStarBrightness(partialTicks) * f15;
 
-            if (f17 > 0.0F && Config.isStarsEnabled() && !CustomSky.hasSkyLayers(this.theWorld) && !Core.CORE)
+            if (f17 > 0.0F && Config.isStarsEnabled() && !CustomSky.hasSkyLayers(this.theWorld))
             {
                 GlStateManager.color(f17, f17, f17, f17);
+                
+                if (Core.CORE) {
+                    Program program = Program.POS_STARS_VBO;
+                    OpenGlHelper.glUseProgram(program.program);
+                    GlStateManager.load(program);
+                    GL30.glBindVertexArray(program.vao);
+                    this.starVBO.drawArrays(4);
+                    this.starVBO.drawArrays(4);
+                    GL30.glBindVertexArray(0);
+                    OpenGlHelper.glUseProgram(0);
+                } else {
+                    this.starVBO.bindBuffer();
+                    GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                    GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
+                    this.starVBO.drawArrays(4);
+                    this.starVBO.unbindBuffer();
+                    GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                }
 
                 // if (this.vboEnabled)
                 // {
-                    this.starVBO.bindBuffer();
-                    GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-                    GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
-                    this.starVBO.drawArrays(7);
-                    this.starVBO.unbindBuffer();
-                    GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
                 // }
                 // else
                 // {
@@ -1921,13 +2011,22 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
                 // if (this.vboEnabled)
                 // {
-                if (!Core.CORE) {
+                if (Core.CORE) {
+                    Program program = Program.POS_SKY2_VBO;
+                    OpenGlHelper.glUseProgram(program.program);
+                    GlStateManager.load(program);
+                    GL30.glBindVertexArray(program.vao);
                     this.sky2VBO.bindBuffer();
-                    GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                    this.sky2VBO.drawArrays(4);
+                    GL30.glBindVertexArray(0);
+                    OpenGlHelper.glUseProgram(0);
+                } else {
+                    this.sky2VBO.bindBuffer();
+                    GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                     GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
-                    this.sky2VBO.drawArrays(7);
+                    this.sky2VBO.drawArrays(4);
                     this.sky2VBO.unbindBuffer();
-                    GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                    GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
                 }
                 // }
                 // else
@@ -1980,16 +2079,27 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.0F, -((float)(d0 - 16.0D)), 0.0F);
 
-            if (Config.isSkyEnabled() && !Core.CORE)
+            if (Config.isSkyEnabled())
             {
                 // if (this.vboEnabled)
                 // {
+                if (Core.CORE) {
+                    Program program = Program.POS_SKY2_VBO;
+                    OpenGlHelper.glUseProgram(program.program);
+                    GlStateManager.load(program);
+                    GL30.glBindVertexArray(program.vao);
                     this.sky2VBO.bindBuffer();
-                    GlStateManager.glEnableClientState(32884);
-                    GlStateManager.glVertexPointer(3, 5126, 12, 0);
-                    this.sky2VBO.drawArrays(7);
+                    this.sky2VBO.drawArrays(4);
+                    GL30.glBindVertexArray(0);
+                    OpenGlHelper.glUseProgram(0);
+                } else {
+                    this.sky2VBO.bindBuffer();
+                    GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                    GL11.glVertexPointer(3, GL11.GL_FLOAT, 12, 0L);
+                    this.sky2VBO.drawArrays(4);
                     this.sky2VBO.unbindBuffer();
-                    GlStateManager.glDisableClientState(32884);
+                    GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+                }
                 // }
                 // else
                 // {

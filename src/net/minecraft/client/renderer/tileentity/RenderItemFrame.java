@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer.tileentity;
 
+import net.core.Core;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -216,7 +217,9 @@ public class RenderItemFrame extends Render<EntityItemFrame>
                     FontRenderer fontrenderer = this.getFontRendererFromRenderManager();
                     GlStateManager.pushMatrix();
                     GlStateManager.translate((float)x + 0.0F, (float)y + entity.height + 0.5F, (float)z);
-                    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                    if (!Core.CORE) {
+                        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                    }
                     GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
                     GlStateManager.rotate(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
                     GlStateManager.scale(-f1, -f1, f1);

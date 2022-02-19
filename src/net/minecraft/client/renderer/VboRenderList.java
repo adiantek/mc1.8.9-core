@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer;
 
+import net.core.Core;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.src.Config;
@@ -23,14 +25,25 @@ public class VboRenderList extends ChunkRenderContainer
                 for (RenderChunk renderchunk1 : this.renderChunks)
                 {
                     VertexBuffer vertexbuffer1 = renderchunk1.getVertexBufferByLayer(layer.ordinal());
+                    Minecraft.checkGLError("a");
                     GlStateManager.pushMatrix();
+                    Minecraft.checkGLError("a");
                     this.preRenderChunk(renderchunk1);
+                    Minecraft.checkGLError("a");
                     renderchunk1.multModelviewMatrix();
+                    Minecraft.checkGLError("a");
                     vertexbuffer1.bindBuffer();
+                    Minecraft.checkGLError("a");
                     this.setupArrayPointers();
-                    vertexbuffer1.drawArrays(7);
+                    Minecraft.checkGLError("a");
+                    if (!Core.CORE) {
+                        vertexbuffer1.drawArrays(7);
+                    }
+                    Minecraft.checkGLError("a");
                     GlStateManager.popMatrix();
+                    Minecraft.checkGLError("a");
                 }
+                Minecraft.checkGLError("a");
             }
             else
             {
@@ -62,12 +75,14 @@ public class VboRenderList extends ChunkRenderContainer
                 {
                     this.drawRegion(i, j, vboregion);
                 }
+                Minecraft.checkGLError("a");
             }
 
             OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
             GlStateManager.resetColor();
             this.renderChunks.clear();
         }
+        Minecraft.checkGLError("a");
     }
 
     public void setupArrayPointers()
@@ -78,11 +93,15 @@ public class VboRenderList extends ChunkRenderContainer
         }
         else
         {
-            GL11.glVertexPointer(3, GL11.GL_FLOAT, 28, 0L);
-            GL11.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 28, 12L);
-            GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 28, 16L);
+            if (!Core.CORE) {
+                GL11.glVertexPointer(3, GL11.GL_FLOAT, 28, 0L);
+                GL11.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 28, 12L);
+                GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 28, 16L);
+            }
             OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GL11.glTexCoordPointer(2, GL11.GL_SHORT, 28, 24L);
+            if (!Core.CORE) {
+                GL11.glTexCoordPointer(2, GL11.GL_SHORT, 28, 24L);
+            }
             OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
         }
     }

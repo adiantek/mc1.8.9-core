@@ -1,6 +1,8 @@
 package net.minecraft.client.renderer;
 
 import java.nio.IntBuffer;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.ListedRenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.src.Config;
@@ -75,6 +77,7 @@ public class RenderList extends ChunkRenderContainer
             GlStateManager.resetColor();
             this.renderChunks.clear();
         }
+        Minecraft.checkGLError("a");
     }
 
     public void initialize(double viewEntityXIn, double viewEntityYIn, double viewEntityZIn)

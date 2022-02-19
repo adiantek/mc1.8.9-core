@@ -79,7 +79,11 @@ public class Program {
         vbo = OpenGlHelper.glGenBuffers();
         OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, vbo);
         // OpenGlHelper.glBufferData(OpenGlHelper.GL_ARRAY_BUFFER, format.getNextOffset(), GL30.GL_STATIC_DRAW);
+        this.loadAttrib(format);
+        OpenGlHelper.glUseProgram(0);
+    }
 
+    public void loadAttrib(VertexFormat format) {
         Minecraft.checkGLError("");
         if (format.hasPosition()) {
             GL20.glEnableVertexAttribArray(0);
@@ -99,7 +103,6 @@ public class Program {
             GL20.glVertexAttribPointer(2, 4, GL11.GL_UNSIGNED_BYTE, true, format.getNextOffset(), format.getColorOffset());
         }
         Minecraft.checkGLError("");
-        OpenGlHelper.glUseProgram(0);
     }
 
     private static int createShader(ShaderLoader.ShaderType type, String filename) throws IOException {
@@ -128,4 +131,12 @@ public class Program {
     public static final Program POS_TEX = new Program("shaders/core/position_tex", DefaultVertexFormats.POSITION_TEX);
     public static final Program POS_COLOR = new Program("shaders/core/position_color", DefaultVertexFormats.POSITION_COLOR);
     public static final Program POS_COLOR_NO_TEX = new Program("shaders/core/position_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+    public static final Program POS_SKY_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_SKY2_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_STARS_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+
+    // TODO parse normal in lighting?
+    public static final Program POS_TEX_NORMAL = new Program("shaders/core/position_tex", DefaultVertexFormats.POSITION_TEX_NORMAL);
+    public static final Program POS_TEX_COLOR_NORMAL = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+    //POSITION_TEX_NORMAL
 }

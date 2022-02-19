@@ -66,12 +66,16 @@ public class GlStateManager
 
     public static void pushAttrib()
     {
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT);
+        if (!Core.CORE) {
+            GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT);
+        }
     }
 
     public static void popAttrib()
     {
-        GL11.glPopAttrib();
+        if (!Core.CORE) {
+            GL11.glPopAttrib();
+        }
     }
 
     public static void disableAlpha()

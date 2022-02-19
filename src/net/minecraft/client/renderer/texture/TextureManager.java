@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.crash.CrashReport;
@@ -40,15 +42,18 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
 
     public void bindTexture(ResourceLocation resource)
     {
+        Minecraft.checkGLError("a");
         if (Config.isRandomEntities())
         {
             resource = RandomEntities.getTextureLocation(resource);
         }
 
+        Minecraft.checkGLError("a");
         if (Config.isCustomGuis())
         {
             resource = CustomGuis.getTextureLocation(resource);
         }
+        Minecraft.checkGLError("a");
 
         ITextureObject itextureobject = (ITextureObject)this.mapTextureObjects.get(resource);
 
@@ -56,12 +61,14 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
         {
             itextureobject = EmissiveTextures.getEmissiveTexture(itextureobject, this.mapTextureObjects);
         }
+        Minecraft.checkGLError("a");
 
         if (itextureobject == null)
         {
             itextureobject = new SimpleTexture(resource);
             this.loadTexture(resource, itextureobject);
         }
+        Minecraft.checkGLError("a");
 
         if (Config.isShaders())
         {
