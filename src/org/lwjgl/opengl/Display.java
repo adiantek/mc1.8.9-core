@@ -967,6 +967,11 @@ public class Display {
                 glfwWindowHint(GLFW_VISIBLE, displayVisible ? GL_TRUE : GL_FALSE);
                 glfwWindowHint(GLFW_RESIZABLE, displayResizable ? GL_TRUE : GL_FALSE);
                 glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+                if (Core.CORE) {
+                    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+                    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+                    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+                }
 
                 newCurrentWindow(GLFW.glfwCreateWindow(width.get(), height.get(), windowTitle,
                                                        GLFW.glfwGetWindowMonitor(Window.handle), NULL));
@@ -1001,6 +1006,11 @@ public class Display {
                 glfwWindowHint(GLFW_VISIBLE, displayVisible ? GL_TRUE : GL_FALSE);
                 glfwWindowHint(GLFW_RESIZABLE, displayResizable ? GL_TRUE : GL_FALSE);
                 glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+                if (Core.CORE) {
+                    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+                    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+                    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+                }
 
                 if (fullscreen)
                     newCurrentWindow(glfwCreateWindow(width.get(), height.get(), windowTitle,
@@ -1073,7 +1083,7 @@ public class Display {
         GLFW.glfwSetWindowTitle(newWindow, windowTitle);
         Window.setCallbacks();
 
-        // glfwMakeContextCurrent(Window.handle);
+        glfwMakeContextCurrent(Window.handle);
         context = org.lwjgl.opengl.GLContext.createFromCurrent();
 
         glfwSwapInterval(0);
