@@ -32,6 +32,7 @@ public class CloudRenderer
     private double updatePlayerZ = 0.0D;
     private VertexBuffer clouds;
     private boolean fancyClouds;
+    private boolean withFog;
 
     public CloudRenderer(Minecraft mc)
     {
@@ -89,9 +90,10 @@ public class CloudRenderer
 
     public void endUpdateGlList(ByteBuffer bb, boolean fancy)
     {
+        withFog = GlStateManager.isFogEnabled();
         fancyClouds = fancy;
         clouds.bufferData(bb);
-        Program program = fancy ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
+        Program program = fancy ? (withFog ? Program.FOG_CLOUDS_FANCY : Program.CLOUDS_FANCY) : (withFog ? Program.FOG_CLOUDS_FAST : Program.CLOUDS_FAST);
         GL30.glBindVertexArray(program.vao[0]);
         clouds.bindBuffer();
         program.loadAttrib(fancy ? DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL : DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -128,7 +130,7 @@ public class CloudRenderer
         }
 
         // GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        Program program = fancyClouds ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
+        Program program = fancyClouds ? (withFog ? Program.FOG_CLOUDS_FANCY : Program.CLOUDS_FANCY) : (withFog ? Program.FOG_CLOUDS_FAST : Program.CLOUDS_FAST);
         OpenGlHelper.glUseProgram(program.program);
         GL30.glBindVertexArray(program.vao[0]);
         GlStateManager.load(program);

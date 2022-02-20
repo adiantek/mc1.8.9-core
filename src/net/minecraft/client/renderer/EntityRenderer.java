@@ -97,6 +97,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.NVFogDistance;
 import org.lwjgl.util.glu.Project;
 
 public class EntityRenderer implements IResourceManagerReloadListener
@@ -2470,6 +2471,13 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
         if (!Core.CORE) {
             GL11.glFog(GL11.GL_FOG_COLOR, (FloatBuffer)this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
+        } else {
+            GlStateManager.fog.fogColor[0] = this.fogColorRed;
+            GlStateManager.fog.fogColor[1] = this.fogColorGreen;
+            GlStateManager.fog.fogColor[2] = this.fogColorBlue;
+            GlStateManager.fog.fogColor[3] = 1.0f;
+        }
+        if (!Core.CORE) {
             GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2508,9 +2516,15 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 GlStateManager.setFogEnd(f4);
             }
 
-            if (GLContext.getCapabilities().GL_NV_fog_distance && Config.isFogFancy())
-            {
-                GL11.glFogi(34138, 34139);
+            if (Config.isFogFancy()) {
+                if (Core.CORE) {
+                    GlStateManager.fog.fogRadial = true;
+                } else {
+                    if (GLContext.getCapabilities().GL_NV_fog_distance)
+                    {
+                        GL11.glFogi(NVFogDistance.GL_FOG_DISTANCE_MODE_NV, NVFogDistance.GL_EYE_RADIAL_NV);
+                    }
+                }
             }
         }
         else if (this.cloudFog)
@@ -2560,13 +2574,20 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 {
                     if (Config.isFogFancy())
                     {
-                        GL11.glFogi(34138, 34139);
+                        GL11.glFogi(NVFogDistance.GL_FOG_DISTANCE_MODE_NV, NVFogDistance.GL_EYE_RADIAL_NV);
                     }
 
                     if (Config.isFogFast())
                     {
-                        GL11.glFogi(34138, 34140);
+                        GL11.glFogi(NVFogDistance.GL_FOG_DISTANCE_MODE_NV, NVFogDistance.GL_EYE_PLANE_ABSOLUTE_NV);
                     }
+                }
+            } else {
+                if (Config.isFogFancy()) {
+                    GlStateManager.fog.fogRadial = true;
+                }
+                if (Config.isFogFast()) {
+                    GlStateManager.fog.fogRadial = false;
                 }
             }
 

@@ -12,7 +12,7 @@ public class Start
     {
         GLFW.glfwInit();
         GLFWErrorCallback.createPrint(System.out).set();
-        Main.main(concat(new String[] {"--server", "proxy1.qzecijnwepfoou5ppbht.fun.", "--width", "1920", "--height", "1080", "--version", "mcp", "--accessToken", "0", "--assetsDir", System.getenv("APPDATA") + "\\.minecraft\\assets", "--assetIndex", "1.8", "--userProperties", "{}"}, args));
+        Main.main(concat(new String[] {"--width", "1920", "--height", "1080", "--version", "mcp", "--accessToken", "0", "--assetsDir", System.getenv("APPDATA") + "\\.minecraft\\assets", "--assetIndex", "1.8", "--userProperties", "{}"}, args));
     }
 
     public static <T> T[] concat(T[] first, T[] second)

@@ -25,7 +25,7 @@ public class VboRenderList extends ChunkRenderContainer
         {
             if (!Config.isRenderRegions())
             {
-                Program program = Program.BLOCK;
+                Program program = GlStateManager.isFogEnabled() ? Program.FOG_BLOCK : Program.BLOCK;
                 OpenGlHelper.glUseProgram(program.program);
                 GL30.glBindVertexArray(program.vao[0]);
 

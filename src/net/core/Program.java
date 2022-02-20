@@ -34,6 +34,15 @@ public class Program {
     public final int Sampler0;
     public final int ColorModulator;
 
+    public final int fogMode;
+    public final int fogDensity;
+    public final int fogStart;
+    public final int fogEnd;
+    public final int fogRadial;
+    public final int fogColor;
+
+    public final Fog fog = new Fog();
+
     public final int program;
 
     public final int[] vao;
@@ -71,6 +80,15 @@ public class Program {
         AlphaDiscard = OpenGlHelper.glGetUniformLocation(program, "AlphaDiscard");
         Sampler0 = OpenGlHelper.glGetUniformLocation(program, "Sampler0");
         ColorModulator = OpenGlHelper.glGetUniformLocation(program, "ColorModulator");
+        
+        fogMode = OpenGlHelper.glGetUniformLocation(program, "fogMode");
+        fogDensity = OpenGlHelper.glGetUniformLocation(program, "fogDensity");
+        fogStart = OpenGlHelper.glGetUniformLocation(program, "fogStart");
+        fogEnd = OpenGlHelper.glGetUniformLocation(program, "fogEnd");
+        fogRadial = OpenGlHelper.glGetUniformLocation(program, "fogRadial");
+        fogColor = OpenGlHelper.glGetUniformLocation(program, "fogColor");
+
+        fog.loadDefaults();
 
         Minecraft.checkGLError("");
         vao = new int[256];
@@ -129,19 +147,33 @@ public class Program {
     }
 
     public static final Program POS = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_SKY_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_SKY2_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_STARS_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
     public static final Program POS_TEX_COLOR = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
     public static final Program POS_TEX = new Program("shaders/core/position_tex", DefaultVertexFormats.POSITION_TEX);
     public static final Program POS_COLOR = new Program("shaders/core/position_color", DefaultVertexFormats.POSITION_COLOR);
     public static final Program POS_COLOR_NO_TEX = new Program("shaders/core/position_color", DefaultVertexFormats.POSITION_TEX_COLOR);
-    public static final Program POS_SKY_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
-    public static final Program POS_SKY2_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
-    public static final Program POS_STARS_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
-
-    // TODO parse normal in lighting?
     public static final Program POS_TEX_NORMAL = new Program("shaders/core/position_tex", DefaultVertexFormats.POSITION_TEX_NORMAL);
     public static final Program POS_TEX_COLOR_NORMAL = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
     public static final Program ITEM = new Program("shaders/core/position_tex_color", DefaultVertexFormats.ITEM);
     public static final Program BLOCK = new Program("shaders/core/position_tex_color", DefaultVertexFormats.BLOCK);
     public static final Program CLOUDS_FANCY = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
     public static final Program CLOUDS_FAST = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+
+    public static final Program FOG_POS = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
+    public static final Program FOG_POS_SKY_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
+    public static final Program FOG_POS_SKY2_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
+    public static final Program FOG_POS_STARS_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
+    public static final Program FOG_POS_TEX_COLOR = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+    public static final Program FOG_POS_TEX = new Program("shaders/core/fog_fancy_position_tex", DefaultVertexFormats.POSITION_TEX);
+    public static final Program FOG_POS_COLOR = new Program("shaders/core/fog_fancy_position_color", DefaultVertexFormats.POSITION_COLOR);
+    public static final Program FOG_POS_COLOR_NO_TEX = new Program("shaders/core/fog_fancy_position_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+    public static final Program FOG_POS_TEX_NORMAL = new Program("shaders/core/fog_fancy_position_tex", DefaultVertexFormats.POSITION_TEX_NORMAL);
+    public static final Program FOG_POS_TEX_COLOR_NORMAL = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+    public static final Program FOG_ITEM = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.ITEM);
+    public static final Program FOG_BLOCK = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.BLOCK);
+    public static final Program FOG_CLOUDS_FANCY = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+    public static final Program FOG_CLOUDS_FAST = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+
 }

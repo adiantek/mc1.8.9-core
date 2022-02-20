@@ -165,26 +165,28 @@ public class WorldVertexBufferUploader
     private void drawCore(WorldRenderer p_181679_1_) {
         VertexFormat vertexformat = p_181679_1_.getVertexFormat();
         Program program = null;
+        boolean fog = GlStateManager.isFogEnabled();
+        
         if (vertexformat == DefaultVertexFormats.POSITION_TEX_COLOR) {
-            program = GlStateManager.isTexture2DEnabled() ? Program.POS_TEX_COLOR : Program.POS_COLOR_NO_TEX;
+            program = GlStateManager.isTexture2DEnabled() ? (fog ? Program.FOG_POS_TEX_COLOR : Program.POS_TEX_COLOR) : (fog ? Program.FOG_POS_COLOR_NO_TEX : Program.POS_COLOR_NO_TEX);
         }
         if (vertexformat == DefaultVertexFormats.POSITION_TEX) {
-            program = Program.POS_TEX;
+            program = fog ? Program.FOG_POS_TEX : Program.POS_TEX;
         }
         if (vertexformat == DefaultVertexFormats.POSITION_COLOR) {
-            program = Program.POS_COLOR;
+            program = fog ? Program.FOG_POS_COLOR : Program.POS_COLOR;
         }
         if (vertexformat == DefaultVertexFormats.POSITION) {
-            program = Program.POS;
+            program = fog ? Program.FOG_POS : Program.POS;
         }
         if (vertexformat == DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL) {
-            program = Program.POS_TEX_COLOR_NORMAL;
+            program = fog ? Program.FOG_POS_TEX_COLOR_NORMAL : Program.POS_TEX_COLOR_NORMAL;
         }
         if (vertexformat == DefaultVertexFormats.POSITION_TEX_NORMAL || vertexformat == DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL) {
-            program = Program.POS_TEX_NORMAL;
+            program = fog ? Program.FOG_POS_TEX_NORMAL : Program.POS_TEX_NORMAL;
         }
         if (vertexformat == DefaultVertexFormats.ITEM) {
-            program = Program.ITEM;
+            program = fog ? Program.FOG_ITEM : Program.ITEM;
         }
         if (program == null) {
             p_181679_1_.reset();

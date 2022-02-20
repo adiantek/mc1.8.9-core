@@ -16,10 +16,9 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL43;
 
 import net.core.Core;
+import net.core.Fog;
 import net.core.Matrix4f;
 import net.core.PoseStack;
 import net.core.Program;
@@ -63,6 +62,10 @@ public class GlStateManager
     }
     private static PoseStack CURRENT_STACK = MODELVIEW_STACK;
     private static boolean textureLoaded = false;
+    public static final Fog fog = new Fog();
+    static {
+        fog.loadDefaults();
+    }
 
     public static void pushAttrib()
     {
@@ -283,6 +286,8 @@ public class GlStateManager
             fogState.mode = param;
             if (!Core.CORE) {
                 GL11.glFogi(GL11.GL_FOG_MODE, param);
+            } else {
+                fog.fogMode = param;
             }
 
             if (Config.isShaders())
@@ -304,6 +309,8 @@ public class GlStateManager
             fogState.density = param;
             if (!Core.CORE) {
                 GL11.glFogf(GL11.GL_FOG_DENSITY, param);
+            } else {
+                fog.fogDensity = param;
             }
 
             if (Config.isShaders())
@@ -318,10 +325,11 @@ public class GlStateManager
         if (param != fogState.start)
         {
             fogState.start = param;
-            if (Core.CORE) {
-                return;
+            if (!Core.CORE) {
+                GL11.glFogf(GL11.GL_FOG_START, param);
+            } else {
+                fog.fogStart = param;
             }
-            GL11.glFogf(GL11.GL_FOG_START, param);
         }
     }
 
@@ -330,28 +338,29 @@ public class GlStateManager
         if (param != fogState.end)
         {
             fogState.end = param;
-            if (Core.CORE) {
-                return;
+            if (!Core.CORE) {
+                GL11.glFogf(GL11.GL_FOG_END, param);
+            } else {
+                fog.fogEnd = param;
             }
-            GL11.glFogf(GL11.GL_FOG_END, param);
         }
     }
 
-    public static void glFog(int p_glFog_0_, FloatBuffer p_glFog_1_)
-    {
-        if (Core.CORE) {
-            return;
-        }
-        GL11.glFog(p_glFog_0_, p_glFog_1_);
-    }
+    // public static void glFog(int p_glFog_0_, FloatBuffer p_glFog_1_)
+    // {
+    //     if (Core.CORE) {
+    //         return;
+    //     }
+    //     GL11.glFog(p_glFog_0_, p_glFog_1_);
+    // }
 
-    public static void glFogi(int p_glFogi_0_, int p_glFogi_1_)
-    {
-        if (Core.CORE) {
-            return;
-        }
-        GL11.glFogi(p_glFogi_0_, p_glFogi_1_);
-    }
+    // public static void glFogi(int p_glFogi_0_, int p_glFogi_1_)
+    // {
+    //     if (Core.CORE) {
+    //         return;
+    //     }
+    //     GL11.glFogi(p_glFogi_0_, p_glFogi_1_);
+    // }
 
     public static void enableCull()
     {
@@ -800,6 +809,9 @@ public class GlStateManager
     }
 
     public static void load(Program program) {
+        if (isFogEnabled()) {
+            program.fog.upload(program, fog);
+        }
         if (program.ModelViewMat != -1) {
             FB.position(0);
             FB.limit(16);

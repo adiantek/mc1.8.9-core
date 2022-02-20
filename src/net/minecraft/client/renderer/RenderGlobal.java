@@ -363,6 +363,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.sky2VBO.unbindBuffer();
             OpenGlHelper.glUseProgram(0);
             GL30.glBindVertexArray(0);
+
+            program = Program.FOG_POS_SKY2_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao[0]);
+            this.sky2VBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.sky2VBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
         // }
         // else
         // {
@@ -400,6 +409,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             worldrenderer.reset();
 
             Program program = Program.POS_SKY_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao[0]);
+            this.skyVBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.skyVBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
+
+            program = Program.FOG_POS_SKY_VBO;
             OpenGlHelper.glUseProgram(program.program);
             GL30.glBindVertexArray(program.vao[0]);
             this.skyVBO.bindBuffer();
@@ -471,6 +489,15 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.starVBO.bufferData(worldrenderer.getByteBuffer());
 
             Program program = Program.POS_STARS_VBO;
+            OpenGlHelper.glUseProgram(program.program);
+            GL30.glBindVertexArray(program.vao[0]);
+            this.starVBO.bindBuffer();
+            program.loadAttrib(this.vertexBufferFormat);
+            this.starVBO.unbindBuffer();
+            OpenGlHelper.glUseProgram(0);
+            GL30.glBindVertexArray(0);
+
+            program = Program.FOG_POS_STARS_VBO;
             OpenGlHelper.glUseProgram(program.program);
             GL30.glBindVertexArray(program.vao[0]);
             this.starVBO.bindBuffer();
@@ -1796,7 +1823,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 // if (this.vboEnabled)
                 // {
                 if (Core.CORE) {
-                    Program program = Program.POS_SKY_VBO;
+                    Program program = GlStateManager.isFogEnabled() ? Program.FOG_POS_SKY_VBO : Program.POS_SKY_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
                     GL30.glBindVertexArray(program.vao[0]);
@@ -1950,11 +1977,10 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 GlStateManager.color(f17, f17, f17, f17);
                 
                 if (Core.CORE) {
-                    Program program = Program.POS_STARS_VBO;
+                    Program program = GlStateManager.isFogEnabled() ? Program.FOG_POS_STARS_VBO : Program.POS_STARS_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
                     GL30.glBindVertexArray(program.vao[0]);
-                    this.starVBO.drawArrays(4);
                     this.starVBO.drawArrays(4);
                     GL30.glBindVertexArray(0);
                     OpenGlHelper.glUseProgram(0);
@@ -2005,7 +2031,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 // if (this.vboEnabled)
                 // {
                 if (Core.CORE) {
-                    Program program = Program.POS_SKY2_VBO;
+                    Program program = GlStateManager.isFogEnabled() ? Program.FOG_POS_SKY2_VBO : Program.POS_SKY2_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
                     GL30.glBindVertexArray(program.vao[0]);
@@ -2077,7 +2103,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 // if (this.vboEnabled)
                 // {
                 if (Core.CORE) {
-                    Program program = Program.POS_SKY2_VBO;
+                    Program program = GlStateManager.isFogEnabled() ? Program.FOG_POS_SKY2_VBO : Program.POS_SKY2_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
                     GL30.glBindVertexArray(program.vao[0]);
