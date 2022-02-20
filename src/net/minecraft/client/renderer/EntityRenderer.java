@@ -1661,6 +1661,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         this.mc.mcProfiler.endStartSection("terrain_setup");
         Minecraft.checkGLError("a");
         this.checkLoadVisibleChunks(entity, partialTicks, icamera, this.mc.thePlayer.isSpectator());
+        Minecraft.checkGLError("a");
 
         if (flag)
         {
@@ -1670,6 +1671,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             renderglobal.setupTerrain(entity, (double)partialTicks, icamera, this.frameCount++, this.mc.thePlayer.isSpectator());
         }
+        Minecraft.checkGLError("a");
 
         if (pass == 0 || pass == 2)
         {

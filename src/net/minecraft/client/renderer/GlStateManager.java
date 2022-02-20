@@ -710,7 +710,7 @@ public class GlStateManager
 
     public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha)
     {
-        if (colorRed != colorState.red || colorGreen != colorState.green || colorBlue != colorState.blue || colorAlpha != colorState.alpha)
+        // if (colorRed != colorState.red || colorGreen != colorState.green || colorBlue != colorState.blue || colorAlpha != colorState.alpha)
         {
             colorState.red = colorRed;
             colorState.green = colorGreen;
@@ -729,7 +729,7 @@ public class GlStateManager
 
     public static void resetColor()
     {
-        colorState.red = colorState.green = colorState.blue = colorState.alpha = -1.0F;
+        // colorState.red = colorState.green = colorState.blue = colorState.alpha = -1.0F;
     }
 
     public static void glNormalPointer(int p_glNormalPointer_0_, int p_glNormalPointer_1_, ByteBuffer p_glNormalPointer_2_)

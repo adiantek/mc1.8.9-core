@@ -1,12 +1,20 @@
 package net.optifine.render;
 
 import net.core.Core;
+import net.core.Program;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
+
+import java.nio.ByteBuffer;
+
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 public class CloudRenderer
 {
@@ -22,15 +30,14 @@ public class CloudRenderer
     private double updatePlayerX = 0.0D;
     private double updatePlayerY = 0.0D;
     private double updatePlayerZ = 0.0D;
-    private int glListClouds = -1;
+    private VertexBuffer clouds;
+    private boolean fancyClouds;
 
     public CloudRenderer(Minecraft mc)
     {
         this.mc = mc;
-        if (Core.CORE) {
-            return;
-        }
-        this.glListClouds = GLAllocation.generateDisplayLists(1);
+        this.clouds = new VertexBuffer(DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+        this.clouds.setDrawMode(4);
     }
 
     public void prepareToRender(boolean renderFancy, int cloudTickCounter, float partialTicks, Vec3 cloudColor)
@@ -78,17 +85,17 @@ public class CloudRenderer
 
     public void startUpdateGlList()
     {
-        if (Core.CORE) {
-            return;
-        }
-        GL11.glNewList(this.glListClouds, GL11.GL_COMPILE);
     }
 
-    public void endUpdateGlList()
+    public void endUpdateGlList(ByteBuffer bb, boolean fancy)
     {
-        if (!Core.CORE) {
-            GL11.glEndList();
-        }
+        fancyClouds = fancy;
+        clouds.bufferData(bb);
+        Program program = fancy ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
+        GL30.glBindVertexArray(program.vao);
+        clouds.bindBuffer();
+        program.loadAttrib(fancy ? DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL : DefaultVertexFormats.POSITION_TEX_COLOR);
+        GL30.glBindVertexArray(0);
         this.updateRenderFancy = this.renderFancy;
         this.updateCloudTickCounter = this.cloudTickCounter;
         this.updateCloudColor = this.cloudColor;
@@ -120,7 +127,17 @@ public class CloudRenderer
             GlStateManager.translate(-f, -f1, -f2);
         }
 
-        GlStateManager.callList(this.glListClouds);
+        // GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        Program program = fancyClouds ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
+        OpenGlHelper.glUseProgram(program.program);
+        GL30.glBindVertexArray(program.vao);
+        GlStateManager.load(program);
+        clouds.bindBuffer();
+        program.loadAttrib(fancyClouds ? DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL : DefaultVertexFormats.POSITION_TEX_COLOR);
+        clouds.drawArrays(4);
+        OpenGlHelper.glUseProgram(0);
+        GL30.glBindVertexArray(0);
+
         GlStateManager.popMatrix();
         GlStateManager.resetColor();
     }

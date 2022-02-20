@@ -2204,8 +2204,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                             }
                         }
 
-                        tessellator.draw();
-                        this.cloudRenderer.endUpdateGlList();
+                        worldrenderer.finishDrawing();
+                        worldrenderer.quadsToTriangles();
+                        this.cloudRenderer.endUpdateGlList(worldrenderer.getByteBuffer(), false);
                     }
 
                     this.cloudRenderer.renderGlList();
@@ -2232,6 +2233,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     private void renderCloudsFancy(float partialTicks, int pass)
     {
+        float partialTicksOld = partialTicks;
         partialTicks = 0.0F;
         GlStateManager.disableCull();
         float f = (float)(this.mc.getRenderViewEntity().lastTickPosY + (this.mc.getRenderViewEntity().posY - this.mc.getRenderViewEntity().lastTickPosY) * (double)partialTicks);
@@ -2255,7 +2257,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         float f4 = (float)vec3.xCoord;
         float f5 = (float)vec3.yCoord;
         float f6 = (float)vec3.zCoord;
-        this.cloudRenderer.prepareToRender(true, this.cloudTickCounter, partialTicks, vec3);
+        this.cloudRenderer.prepareToRender(true, this.cloudTickCounter, partialTicksOld, vec3);
 
         if (pass != 2)
         {
@@ -2315,12 +2317,12 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         if (this.cloudRenderer.shouldUpdateGlList())
         {
             this.cloudRenderer.startUpdateGlList();
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
 
             for (int l1 = -3; l1 <= 4; ++l1)
             {
                 for (int j1 = -3; j1 <= 4; ++j1)
                 {
-                    worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
                     float f22 = (float)(l1 * 8);
                     float f23 = (float)(j1 * 8);
                     float f24 = f22 - f19;
@@ -2386,11 +2388,12 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                         }
                     }
 
-                    tessellator.draw();
                 }
             }
 
-            this.cloudRenderer.endUpdateGlList();
+            worldrenderer.finishDrawing();
+            worldrenderer.quadsToTriangles();
+            this.cloudRenderer.endUpdateGlList(worldrenderer.getByteBuffer(), true);
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
