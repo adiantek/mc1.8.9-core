@@ -194,8 +194,11 @@ public class WorldVertexBufferUploader
         OpenGlHelper.glUseProgram(program.program);
         GlStateManager.load(program);
 
-        GL30.glBindVertexArray(program.vao);
-        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, program.vbo);
+        program.tick++;
+        program.tick %= program.vao.length;
+
+        GL30.glBindVertexArray(program.vao[program.tick]);
+        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, program.vbo[program.tick]);
         ByteBuffer bytebuffer = p_181679_1_.getByteBuffer();
 
         OpenGlHelper.glBufferData(OpenGlHelper.GL_ARRAY_BUFFER, bytebuffer, GL30.GL_STREAM_DRAW);

@@ -92,7 +92,7 @@ public class CloudRenderer
         fancyClouds = fancy;
         clouds.bufferData(bb);
         Program program = fancy ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
-        GL30.glBindVertexArray(program.vao);
+        GL30.glBindVertexArray(program.vao[0]);
         clouds.bindBuffer();
         program.loadAttrib(fancy ? DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL : DefaultVertexFormats.POSITION_TEX_COLOR);
         GL30.glBindVertexArray(0);
@@ -130,7 +130,7 @@ public class CloudRenderer
         // GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         Program program = fancyClouds ? Program.CLOUDS_FANCY : Program.CLOUDS_FAST;
         OpenGlHelper.glUseProgram(program.program);
-        GL30.glBindVertexArray(program.vao);
+        GL30.glBindVertexArray(program.vao[0]);
         GlStateManager.load(program);
         clouds.bindBuffer();
         program.loadAttrib(fancyClouds ? DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL : DefaultVertexFormats.POSITION_TEX_COLOR);

@@ -351,12 +351,13 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.sky2VBO = new VertexBuffer(this.vertexBufferFormat);
             this.renderSky(worldrenderer, -16.0F, true);
             worldrenderer.finishDrawing();
-            worldrenderer.reset();
+            worldrenderer.quadsToTriangles();
             this.sky2VBO.bufferData(worldrenderer.getByteBuffer());
+            worldrenderer.reset();
 
             Program program = Program.POS_SKY2_VBO;
             OpenGlHelper.glUseProgram(program.program);
-            GL30.glBindVertexArray(program.vao);
+            GL30.glBindVertexArray(program.vao[0]);
             this.sky2VBO.bindBuffer();
             program.loadAttrib(this.vertexBufferFormat);
             this.sky2VBO.unbindBuffer();
@@ -394,12 +395,13 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             this.skyVBO = new VertexBuffer(this.vertexBufferFormat);
             this.renderSky(worldrenderer, 16.0F, false);
             worldrenderer.finishDrawing();
-            worldrenderer.reset();
+            worldrenderer.quadsToTriangles();
             this.skyVBO.bufferData(worldrenderer.getByteBuffer());
+            worldrenderer.reset();
 
             Program program = Program.POS_SKY_VBO;
             OpenGlHelper.glUseProgram(program.program);
-            GL30.glBindVertexArray(program.vao);
+            GL30.glBindVertexArray(program.vao[0]);
             this.skyVBO.bindBuffer();
             program.loadAttrib(this.vertexBufferFormat);
             this.skyVBO.unbindBuffer();
@@ -420,7 +422,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     {
         int i = 64;
         int j = 6;
-        worldRendererIn.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+        worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         int k = (this.renderDistance / 64 + 1) * 64 + 64;
 
         for (int l = -k; l <= k; l += 64)
@@ -436,19 +438,10 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     f = (float)(l + 64);
                 }
 
-                // worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
-                // worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex(); // 2
-                // worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
-                // worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex(); // 4
-
-                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
-                worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex(); // 2
-                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
-
-                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex(); // 3
-                worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex(); // 4
-                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex(); // 1
-
+                worldRendererIn.pos((double)f, (double)posY, (double)i1).endVertex();
+                worldRendererIn.pos((double)f1, (double)posY, (double)i1).endVertex();
+                worldRendererIn.pos((double)f1, (double)posY, (double)(i1 + 64)).endVertex();
+                worldRendererIn.pos((double)f, (double)posY, (double)(i1 + 64)).endVertex();
             }
         }
     }
@@ -479,7 +472,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
             Program program = Program.POS_STARS_VBO;
             OpenGlHelper.glUseProgram(program.program);
-            GL30.glBindVertexArray(program.vao);
+            GL30.glBindVertexArray(program.vao[0]);
             this.starVBO.bindBuffer();
             program.loadAttrib(this.vertexBufferFormat);
             this.starVBO.unbindBuffer();
@@ -1806,7 +1799,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     Program program = Program.POS_SKY_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
-                    GL30.glBindVertexArray(program.vao);
+                    GL30.glBindVertexArray(program.vao[0]);
                     this.skyVBO.bindBuffer();
                     this.skyVBO.drawArrays(4);
                     GL30.glBindVertexArray(0);
@@ -1960,7 +1953,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     Program program = Program.POS_STARS_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
-                    GL30.glBindVertexArray(program.vao);
+                    GL30.glBindVertexArray(program.vao[0]);
                     this.starVBO.drawArrays(4);
                     this.starVBO.drawArrays(4);
                     GL30.glBindVertexArray(0);
@@ -2015,7 +2008,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     Program program = Program.POS_SKY2_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
-                    GL30.glBindVertexArray(program.vao);
+                    GL30.glBindVertexArray(program.vao[0]);
                     this.sky2VBO.bindBuffer();
                     this.sky2VBO.drawArrays(4);
                     GL30.glBindVertexArray(0);
@@ -2087,7 +2080,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     Program program = Program.POS_SKY2_VBO;
                     OpenGlHelper.glUseProgram(program.program);
                     GlStateManager.load(program);
-                    GL30.glBindVertexArray(program.vao);
+                    GL30.glBindVertexArray(program.vao[0]);
                     this.sky2VBO.bindBuffer();
                     this.sky2VBO.drawArrays(4);
                     GL30.glBindVertexArray(0);

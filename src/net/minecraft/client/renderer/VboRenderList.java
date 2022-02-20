@@ -27,7 +27,7 @@ public class VboRenderList extends ChunkRenderContainer
             {
                 Program program = Program.BLOCK;
                 OpenGlHelper.glUseProgram(program.program);
-                GL30.glBindVertexArray(program.vao);
+                GL30.glBindVertexArray(program.vao[0]);
 
                 for (RenderChunk renderchunk1 : this.renderChunks)
                 {

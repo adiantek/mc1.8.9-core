@@ -36,8 +36,9 @@ public class Program {
 
     public final int program;
 
-    public final int vao;
-    public final int vbo;
+    public final int[] vao;
+    public final int[] vbo;
+    public int tick = 0;
 
     public Program(String name, VertexFormat format) {
         program = OpenGlHelper.glCreateProgram();
@@ -56,9 +57,8 @@ public class Program {
         }
         Minecraft.checkGLError("");
         OpenGlHelper.glLinkProgram(program);
-        int i = OpenGlHelper.glGetProgrami(program, OpenGlHelper.GL_LINK_STATUS);
 
-        if (i == 0) {
+        if (OpenGlHelper.glGetProgrami(program, OpenGlHelper.GL_LINK_STATUS) == 0) {
             logger.warn("Error encountered when linking program containing " + name + ". Log output:");
             logger.warn(OpenGlHelper.glGetProgramInfoLog(program, 32768));
         }
@@ -73,13 +73,15 @@ public class Program {
         ColorModulator = OpenGlHelper.glGetUniformLocation(program, "ColorModulator");
 
         Minecraft.checkGLError("");
-        vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
-
-        vbo = OpenGlHelper.glGenBuffers();
-        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, vbo);
-        // OpenGlHelper.glBufferData(OpenGlHelper.GL_ARRAY_BUFFER, format.getNextOffset(), GL30.GL_STATIC_DRAW);
-        this.loadAttrib(format);
+        vao = new int[256];
+        vbo = new  int[vao.length];
+        for (int i = 0; i < vao.length; i++) {
+            vao[i] = GL30.glGenVertexArrays();
+            GL30.glBindVertexArray(vao[i]);
+            vbo[i] = OpenGlHelper.glGenBuffers();
+            OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, vbo[i]);
+            this.loadAttrib(format);
+        }
         OpenGlHelper.glUseProgram(0);
     }
 
