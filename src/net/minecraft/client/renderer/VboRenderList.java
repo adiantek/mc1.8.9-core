@@ -1,14 +1,17 @@
 package net.minecraft.client.renderer;
 
 import net.core.Core;
+import net.core.Program;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.RenderChunk;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.src.Config;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.optifine.render.VboRegion;
 import net.optifine.shaders.ShadersRender;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 public class VboRenderList extends ChunkRenderContainer
 {
@@ -22,28 +25,35 @@ public class VboRenderList extends ChunkRenderContainer
         {
             if (!Config.isRenderRegions())
             {
+                Program program = Program.BLOCK;
+                OpenGlHelper.glUseProgram(program.program);
+                GL30.glBindVertexArray(program.vao);
+
                 for (RenderChunk renderchunk1 : this.renderChunks)
                 {
                     VertexBuffer vertexbuffer1 = renderchunk1.getVertexBufferByLayer(layer.ordinal());
-                    Minecraft.checkGLError("a");
                     GlStateManager.pushMatrix();
-                    Minecraft.checkGLError("a");
                     this.preRenderChunk(renderchunk1);
-                    Minecraft.checkGLError("a");
                     renderchunk1.multModelviewMatrix();
                     Minecraft.checkGLError("a");
-                    vertexbuffer1.bindBuffer();
-                    Minecraft.checkGLError("a");
-                    this.setupArrayPointers();
-                    Minecraft.checkGLError("a");
-                    if (!Core.CORE) {
+                    if (Core.CORE) {
+                        GlStateManager.load(program);
+
+                        vertexbuffer1.bindBuffer();
+                        program.loadAttrib(DefaultVertexFormats.BLOCK);
+                        vertexbuffer1.drawArrays(4);
+                    } else {
+                        vertexbuffer1.bindBuffer();
+                        this.setupArrayPointers();
                         vertexbuffer1.drawArrays(7);
                     }
-                    Minecraft.checkGLError("a");
                     GlStateManager.popMatrix();
                     Minecraft.checkGLError("a");
                 }
                 Minecraft.checkGLError("a");
+                        
+                OpenGlHelper.glUseProgram(0);
+                GL30.glBindVertexArray(0);
             }
             else
             {

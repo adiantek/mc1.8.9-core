@@ -183,7 +183,9 @@ public class WorldVertexBufferUploader
         if (vertexformat == DefaultVertexFormats.POSITION_TEX_NORMAL || vertexformat == DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL) {
             program = Program.POS_TEX_NORMAL;
         }
-
+        if (vertexformat == DefaultVertexFormats.ITEM) {
+            program = Program.ITEM;
+        }
         if (program == null) {
             p_181679_1_.reset();
             return;

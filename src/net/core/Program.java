@@ -138,5 +138,7 @@ public class Program {
     // TODO parse normal in lighting?
     public static final Program POS_TEX_NORMAL = new Program("shaders/core/position_tex", DefaultVertexFormats.POSITION_TEX_NORMAL);
     public static final Program POS_TEX_COLOR_NORMAL = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+    public static final Program ITEM = new Program("shaders/core/position_tex_color", DefaultVertexFormats.ITEM);
+    public static final Program BLOCK = new Program("shaders/core/position_tex_color", DefaultVertexFormats.BLOCK);
     //POSITION_TEX_NORMAL
 }
