@@ -191,6 +191,12 @@ public class WorldVertexBufferUploader
         if (vertexformat == DefaultVertexFormats.BLOCK) {
             program = fog ? Program.FOG_BLOCK : Program.BLOCK;
         }
+        if (vertexformat == DefaultVertexFormats.POSITION_NORMAL) {
+            program = fog ? Program.FOG_POS_NORMAL : Program.POS_NORMAL;
+        }
+        if (vertexformat == DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP) {
+            program = fog ? Program.FOG_PARTICLE : Program.PARTICLE;
+        }
         if (program == null) {
             p_181679_1_.reset();
             return;

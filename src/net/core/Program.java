@@ -149,6 +149,7 @@ public class Program {
     }
 
     public static final Program POS = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
+    public static final Program POS_NORMAL = new Program("shaders/core/position", DefaultVertexFormats.POSITION_NORMAL);
     public static final Program POS_SKY_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
     public static final Program POS_SKY2_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
     public static final Program POS_STARS_VBO = new Program("shaders/core/position", DefaultVertexFormats.POSITION);
@@ -162,8 +163,10 @@ public class Program {
     public static final Program BLOCK = new Program("shaders/core/position_tex_color", DefaultVertexFormats.BLOCK);
     public static final Program CLOUDS_FANCY = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
     public static final Program CLOUDS_FAST = new Program("shaders/core/position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+    public static final Program PARTICLE = new Program("shaders/core/position_tex_color", DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
     public static final Program FOG_POS = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
+    public static final Program FOG_POS_NORMAL = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION_NORMAL);
     public static final Program FOG_POS_SKY_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
     public static final Program FOG_POS_SKY2_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
     public static final Program FOG_POS_STARS_VBO = new Program("shaders/core/fog_fancy_position", DefaultVertexFormats.POSITION);
@@ -177,5 +180,6 @@ public class Program {
     public static final Program FOG_BLOCK = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.BLOCK);
     public static final Program FOG_CLOUDS_FANCY = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
     public static final Program FOG_CLOUDS_FAST = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.POSITION_TEX_COLOR);
+    public static final Program FOG_PARTICLE = new Program("shaders/core/fog_fancy_position_tex_color", DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
 }
