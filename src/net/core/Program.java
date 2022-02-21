@@ -30,6 +30,7 @@ public class Program {
     // color = 2
     public final int ModelViewMat;
     public final int ProjMat;
+    public final int TexMat;
     public final int AlphaDiscard;
     public final int Sampler0;
     public final int ColorModulator;
@@ -77,6 +78,7 @@ public class Program {
 
         ModelViewMat = OpenGlHelper.glGetUniformLocation(program, "ModelViewMat");
         ProjMat = OpenGlHelper.glGetUniformLocation(program, "ProjMat");
+        TexMat = OpenGlHelper.glGetUniformLocation(program, "TexMat");
         AlphaDiscard = OpenGlHelper.glGetUniformLocation(program, "AlphaDiscard");
         Sampler0 = OpenGlHelper.glGetUniformLocation(program, "Sampler0");
         ColorModulator = OpenGlHelper.glGetUniformLocation(program, "ColorModulator");

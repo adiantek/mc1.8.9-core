@@ -9,7 +9,7 @@
             "name": "Launch Start",
             "request": "launch",
             "mainClass": "Start",
-            "vmArgs": "-Xmx2G"
+            "vmArgs": "-Xmx2G --add-opens jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED"
         }
     ]
 }

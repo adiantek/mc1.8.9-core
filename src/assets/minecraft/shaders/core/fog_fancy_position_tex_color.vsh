@@ -6,6 +6,7 @@ layout(location = 2) in vec4 Color;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
+uniform mat4 TexMat;
 
 uniform int fogMode;
 uniform float fogDensity;
@@ -40,7 +41,7 @@ float calculateFog(float vertexDistance) {
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
-    texCoord0 = UV0;
+    texCoord0 = vec2(TexMat * vec4(UV0, 1.0, 1.0));
     vertexColor = Color;
     
     vec4 Rh = ModelViewMat * vec4(Position, 1.0);

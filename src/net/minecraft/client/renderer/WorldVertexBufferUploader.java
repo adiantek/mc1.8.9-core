@@ -188,6 +188,9 @@ public class WorldVertexBufferUploader
         if (vertexformat == DefaultVertexFormats.ITEM) {
             program = fog ? Program.FOG_ITEM : Program.ITEM;
         }
+        if (vertexformat == DefaultVertexFormats.BLOCK) {
+            program = fog ? Program.FOG_BLOCK : Program.BLOCK;
+        }
         if (program == null) {
             p_181679_1_.reset();
             return;

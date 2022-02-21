@@ -508,7 +508,6 @@ public class GlStateManager
 
     public static void deleteTexture(int texture)
     {
-        System.out.println("deleting: " + texture);
         if (texture != 0)
         {
             GL11.glDeleteTextures(texture);
@@ -827,6 +826,14 @@ public class GlStateManager
             FB.position(0);
             FB.limit(16);
             OpenGlHelper.glUniformMatrix4(program.ProjMat, false, FB);
+        }
+        if (program.TexMat != -1) {
+            FB.position(0);
+            FB.limit(16);
+            TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            OpenGlHelper.glUniformMatrix4(program.TexMat, false, FB);
         }
         if (program.AlphaDiscard != -1) {
             FB.position(0);
