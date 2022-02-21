@@ -2717,13 +2717,16 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                 return Sys.getVersion();
             }
         });
-        theCrash.getCategory().addCrashSectionCallable("OpenGL", new Callable<String>()
+        if (isCallingFromMinecraftThread())
         {
-            public String call()
+            theCrash.getCategory().addCrashSectionCallable("OpenGL", new Callable<String>()
             {
-                return GL11.glGetString(GL11.GL_RENDERER) + " GL version " + GL11.glGetString(GL11.GL_VERSION) + ", " + GL11.glGetString(GL11.GL_VENDOR);
-            }
-        });
+                public String call()
+                {
+                    return GL11.glGetString(GL11.GL_RENDERER) + " GL version " + GL11.glGetString(GL11.GL_VERSION) + ", " + GL11.glGetString(GL11.GL_VENDOR);
+                }
+            });
+        }
         theCrash.getCategory().addCrashSectionCallable("GL Caps", new Callable<String>()
         {
             public String call()
