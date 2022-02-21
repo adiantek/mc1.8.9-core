@@ -6,74 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch Start",
+            "name": "Launch Start (AMD64)",
             "request": "launch",
             "mainClass": "Start",
-            "projectName": "1.8.9of - core_527aabe6",
             "vmArgs": "-Djava.library.path=natives_amd64 -Xmx2G"
         },
         {
             "type": "java",
-            "name": "Launch Main",
+            "name": "Launch Start (ARM64)",
             "request": "launch",
-            "mainClass": "net.minecraft.client.main.Main",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch TestExpressions",
-            "request": "launch",
-            "mainClass": "net.optifine.expr.TestExpressions",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch Iterator3d",
-            "request": "launch",
-            "mainClass": "net.optifine.shaders.Iterator3d",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch IteratorAxis",
-            "request": "launch",
-            "mainClass": "net.optifine.shaders.IteratorAxis",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch CacheObjectArray",
-            "request": "launch",
-            "mainClass": "net.optifine.util.CacheObjectArray",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch LinkedListTest",
-            "request": "launch",
-            "mainClass": "net.optifine.util.LinkedListTest",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch MathUtilsTest",
-            "request": "launch",
-            "mainClass": "net.optifine.util.MathUtilsTest",
-            "projectName": "1.8.9of - core_527aabe6",
-            "vmArgs": "-Djava.library.path=natives -Xmx2G"
+            "mainClass": "Start",
+            "vmArgs": "-Djava.library.path=natives_arm64 -Xmx2G"
         }
     ]
 }
