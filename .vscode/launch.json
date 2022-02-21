@@ -6,17 +6,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Start (AMD64)",
+            "name": "Launch Start",
             "request": "launch",
             "mainClass": "Start",
-            "vmArgs": "-Djava.library.path=natives_amd64 -Xmx2G"
-        },
-        {
-            "type": "java",
-            "name": "Launch Start (ARM64)",
-            "request": "launch",
-            "mainClass": "Start",
-            "vmArgs": "-Djava.library.path=natives_arm64 -Xmx2G"
+            "vmArgs": "-Xmx2G"
         }
     ]
 }
