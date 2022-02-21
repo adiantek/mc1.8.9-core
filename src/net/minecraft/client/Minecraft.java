@@ -176,6 +176,7 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextCapabilities;
@@ -672,32 +673,33 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     private void setWindowIcon()
     {
-        Util.EnumOS util$enumos = Util.getOSType();
+        InputStream inputstream = null;
+        InputStream inputstream1 = null;
 
-        if (util$enumos != Util.EnumOS.OSX)
+        try
         {
-            InputStream inputstream = null;
-            InputStream inputstream1 = null;
+            inputstream = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"));
+            inputstream1 = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"));
 
-            try
-            {
-                inputstream = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"));
-                inputstream1 = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"));
-
-                if (inputstream != null && inputstream1 != null)
-                {
-                    Display.setIcon(new ByteBuffer[] {this.readImageToBuffer(inputstream), this.readImageToBuffer(inputstream1)});
-                }
+            GLFWImage.Buffer images = GLFWImage.malloc((inputstream == null ? 0 : 1) + (inputstream1 == null ? 0 : 1));
+            int index = 0;
+            if (inputstream != null) {
+                images.put(index++, this.readImageToBuffer(inputstream));
             }
-            catch (IOException ioexception)
-            {
-                logger.error((String)"Couldn\'t set icon", (Throwable)ioexception);
+            if (inputstream1 != null) {
+                images.put(index++, this.readImageToBuffer(inputstream1));
             }
-            finally
-            {
-                IOUtils.closeQuietly(inputstream);
-                IOUtils.closeQuietly(inputstream1);
-            }
+            Display.setIcon(images);
+            // can't free, because images can be reused after entering fullscreen
+        }
+        catch (IOException ioexception)
+        {
+            logger.error((String)"Couldn\'t set icon", (Throwable)ioexception);
+        }
+        finally
+        {
+            IOUtils.closeQuietly(inputstream);
+            IOUtils.closeQuietly(inputstream1);
         }
     }
 
@@ -826,8 +828,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
     }
 
-    private ByteBuffer readImageToBuffer(InputStream imageStream) throws IOException
+    private GLFWImage readImageToBuffer(InputStream imageStream) throws IOException
     {
+        GLFWImage image = GLFWImage.malloc();
         BufferedImage bufferedimage = ImageIO.read(imageStream);
         int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[])null, 0, bufferedimage.getWidth());
         ByteBuffer bytebuffer = ByteBuffer.allocateDirect(4 * aint.length);
@@ -838,7 +841,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
 
         bytebuffer.flip();
-        return bytebuffer;
+        image.set(bufferedimage.getWidth(), bufferedimage.getHeight(), bytebuffer);
+        return image;
     }
 
     private void updateDisplayMode() throws LWJGLException

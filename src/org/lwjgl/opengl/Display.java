@@ -13,7 +13,6 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import net.core.Core;
@@ -424,8 +423,9 @@ public class Display {
 
         Mouse.create();
         Keyboard.create();
-
-        // glfwSetWindowIcon(Window.handle, icons);
+        if (icons != null) {
+            glfwSetWindowIcon(Window.handle, icons);
+        }
         display_impl = new DisplayImplementation() {
 
             @Override
@@ -953,6 +953,11 @@ public class Display {
         return 0;
     }
 
+    public static void setIcon(GLFWImage.Buffer images) {
+        glfwSetWindowIcon(Window.handle, images);
+        Display.icons = images;
+    }
+
     public static void setResizable(boolean resizable) {
         displayResizable = resizable;
         if (displayResizable ^ resizable) {
@@ -1079,6 +1084,9 @@ public class Display {
         } catch (LWJGLException e) {
             System.err.println("Failed to set new window cursor!");
             e.printStackTrace();
+        }
+        if (icons != null) {
+            glfwSetWindowIcon(Window.handle, icons);
         }
         GLFW.glfwSetWindowTitle(newWindow, windowTitle);
         Window.setCallbacks();
