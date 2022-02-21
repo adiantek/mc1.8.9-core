@@ -107,7 +107,7 @@ public class GameSettings
     public boolean snooperEnabled = true;
     public boolean fullScreen;
     public boolean enableVsync = true;
-    public boolean useVbo = false;
+    public boolean useVbo = true;
     public boolean allowBlockAlternatives = true;
     public boolean reducedDebugInfo = false;
     public boolean hideServerAddress;
@@ -663,7 +663,7 @@ public class GameSettings
 
         if (settingsOption == GameSettings.Options.USE_VBO)
         {
-            this.useVbo = !this.useVbo;
+            this.useVbo = true;
             this.difficulty.renderGlobal.loadRenderers();
         }
 
@@ -732,7 +732,7 @@ public class GameSettings
                 return this.enableVsync;
 
             case USE_VBO:
-                return this.useVbo;
+                return this.useVbo || true;
 
             case TOUCHSCREEN:
                 return this.touchscreen;
@@ -1074,7 +1074,7 @@ public class GameSettings
 
                             if (astring[0].equals("useVbo"))
                             {
-                                this.useVbo = astring[1].equals("true");
+                                this.useVbo = astring[1].equals("true") || true;
                             }
 
                             if (astring[0].equals("hideServerAddress"))
@@ -1348,7 +1348,7 @@ public class GameSettings
             printwriter.println("snooperEnabled:" + this.snooperEnabled);
             printwriter.println("fullscreen:" + this.fullScreen);
             printwriter.println("enableVsync:" + this.enableVsync);
-            printwriter.println("useVbo:" + this.useVbo);
+            printwriter.println("useVbo:" + (this.useVbo || true));
             printwriter.println("hideServerAddress:" + this.hideServerAddress);
             printwriter.println("advancedItemTooltips:" + this.advancedItemTooltips);
             printwriter.println("pauseOnLostFocus:" + this.pauseOnLostFocus);
@@ -3178,7 +3178,7 @@ public class GameSettings
         this.particleSetting = 0;
         this.language = 0;
         this.heldItemTooltips = true;
-        this.useVbo = false;
+        this.useVbo = true;
         this.logger = false;
         this.ofFogType = 1;
         this.ofFogStart = 0.8F;
