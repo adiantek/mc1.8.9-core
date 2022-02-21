@@ -121,6 +121,7 @@ public class PoseStack
     public void rotateDeg(float angle, float x, float y, float z)
     {
         Vector3f vector3f = new Vector3f(x, y, z);
+        vector3f.normalize();
         Quaternion quaternion = vector3f.rotationDegrees(angle);
         this.mulPose(quaternion);
     }

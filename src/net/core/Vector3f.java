@@ -172,6 +172,10 @@ public final class Vector3f
         {
             return false;
         }
+        else if (f == 1.0F)
+        {
+            return true;
+        }
         else
         {
             float f1 = Mth.fastInvSqrt(f);
