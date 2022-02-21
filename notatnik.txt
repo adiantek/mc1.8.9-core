@@ -1,2 +1,0 @@
-[ ] naprawić chmury
-[ ] glAlphaFunc oraz glEnable(GL_ALPHA_TEST)
