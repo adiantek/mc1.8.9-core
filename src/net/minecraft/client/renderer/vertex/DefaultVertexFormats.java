@@ -23,7 +23,7 @@ public class DefaultVertexFormats
     public static final VertexFormat POSITION_NORMAL = new VertexFormat();
     public static final VertexFormat POSITION_TEX_COLOR = new VertexFormat();
     public static final VertexFormat POSITION_TEX_NORMAL = new VertexFormat();
-    public static final VertexFormat POSITION_TEX_LMAP_COLOR = new VertexFormat();
+    // public static final VertexFormat POSITION_TEX_LMAP_COLOR = new VertexFormat();
     public static final VertexFormat POSITION_TEX_COLOR_NORMAL = new VertexFormat();
     public static final VertexFormatElement POSITION_3F = new VertexFormatElement(0, VertexFormatElement.EnumType.FLOAT, VertexFormatElement.EnumUsage.POSITION, 3);
     public static final VertexFormatElement COLOR_4UB = new VertexFormatElement(0, VertexFormatElement.EnumType.UBYTE, VertexFormatElement.EnumUsage.COLOR, 4);
@@ -113,10 +113,10 @@ public class DefaultVertexFormats
         POSITION_TEX_NORMAL.addElement(TEX_2F);
         POSITION_TEX_NORMAL.addElement(NORMAL_3B);
         POSITION_TEX_NORMAL.addElement(PADDING_1B);
-        POSITION_TEX_LMAP_COLOR.addElement(POSITION_3F);
-        POSITION_TEX_LMAP_COLOR.addElement(TEX_2F);
-        POSITION_TEX_LMAP_COLOR.addElement(TEX_2S);
-        POSITION_TEX_LMAP_COLOR.addElement(COLOR_4UB);
+        // POSITION_TEX_LMAP_COLOR.addElement(POSITION_3F);
+        // POSITION_TEX_LMAP_COLOR.addElement(TEX_2F);
+        // POSITION_TEX_LMAP_COLOR.addElement(TEX_2S);
+        // POSITION_TEX_LMAP_COLOR.addElement(COLOR_4UB);
         POSITION_TEX_COLOR_NORMAL.addElement(POSITION_3F);
         POSITION_TEX_COLOR_NORMAL.addElement(TEX_2F);
         POSITION_TEX_COLOR_NORMAL.addElement(COLOR_4UB);

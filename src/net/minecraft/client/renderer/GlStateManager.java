@@ -54,9 +54,9 @@ public class GlStateManager
 
     private static final PoseStack MODELVIEW_STACK = new PoseStack();
     private static final PoseStack PROJECTION_STACK = new PoseStack();
-    private static final PoseStack[] TEXTURE_STACK = new PoseStack[32];
+    private static final PoseStack[] TEXTURE_STACK = new PoseStack[3]; // minecraft 1.8 doesn't use more than 3
     static {
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 3; i++) {
             TEXTURE_STACK[i] = new PoseStack();
         }
     }
@@ -827,13 +827,21 @@ public class GlStateManager
             FB.limit(16);
             OpenGlHelper.glUniformMatrix4(program.ProjMat, false, FB);
         }
-        if (program.TexMat != -1) {
+        if (program.TexMat0 != -1) {
             FB.position(0);
             FB.limit(16);
-            TEXTURE_STACK[activeTextureUnit].last().pose().store(FB);
+            TEXTURE_STACK[0].last().pose().store(FB);
             FB.position(0);
             FB.limit(16);
-            OpenGlHelper.glUniformMatrix4(program.TexMat, false, FB);
+            OpenGlHelper.glUniformMatrix4(program.TexMat0, false, FB);
+        }
+        if (program.TexMat1 != -1) {
+            FB.position(0);
+            FB.limit(16);
+            TEXTURE_STACK[1].last().pose().store(FB);
+            FB.position(0);
+            FB.limit(16);
+            OpenGlHelper.glUniformMatrix4(program.TexMat1, false, FB);
         }
         if (program.AlphaDiscard != -1) {
             FB.position(0);
@@ -848,7 +856,10 @@ public class GlStateManager
             OpenGlHelper.glUniform1(program.AlphaDiscard, FB);
         }
         if (program.Sampler0 != -1) {
-            OpenGlHelper.glUniform1i(program.Sampler0, activeTextureUnit);
+            OpenGlHelper.glUniform1i(program.Sampler0, OpenGlHelper.defaultTexUnit - GL13.GL_TEXTURE0);
+        }
+        if (program.Sampler1 != -1) {
+            OpenGlHelper.glUniform1i(program.Sampler1, OpenGlHelper.lightmapTexUnit - GL13.GL_TEXTURE0);
         }
         if (program.ColorModulator != -1) {
             GL20.glUniform4f(program.ColorModulator, colorState.red, colorState.green, colorState.blue, colorState.alpha);
